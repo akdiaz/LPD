@@ -1,3 +1,4 @@
 *.log
 *.last
 *~
+temporal_outputs/
