@@ -3,3 +3,5 @@
 *~
 temporal_outputs/
 *.fits
+*.image
+*.mask
