@@ -22,12 +22,16 @@ class spectrum:
 		self.frequency = freq
 		self.velocity = vel
 		self.flux_density = flux
+	
+	#def make_plot
 
 
 image_name = 'member.uid___A001_X133d_X3abb.HOPS-007_sci.spw3.cube.I.manual.image.pbcor'
 mask_name = 'member.uid___A001_X133d_X3abb.HOPS-007_sci.spw3.cube.I.manual.mask'
 end_name = 'spw3'
 log_name='spectrum_'+end_name+'.txt'
+
+#check that mask image is not just 0s
 
 cube  =  image_cube(image_name, mask_name, end_name)
 cube.make_spectrum(log_name)
