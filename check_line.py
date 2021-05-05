@@ -4,9 +4,9 @@ import numpy as np
 class image_cube:
 	'''This is a image_cube class. It is a CASA image with RA, DEC, and frequency axis.'''
 	
-	def __init__(self, image_name, mask_name):
-		self.image = 'cube.image'
-		self.mask = 'cube.mask'
+	def __init__(self, image_name, mask_name, end_name):
+		self.image = 'cube_'+end_name+'.image'
+		self.mask = 'cube_'+end_name+'.mask'
 		importfits(fitsimage=image_name+'.fits',imagename=self.image)
 		importfits(fitsimage=mask_name+'.fits',imagename=self.mask)
 
@@ -24,11 +24,12 @@ class spectrum:
 		self.flux_density = flux
 
 
-image_name = 'member.uid___A001_X133d_X3abb.HOPS-007_sci.spw0.cube.I.manual.image.pbcor'
-mask_name = 'member.uid___A001_X133d_X3abb.HOPS-007_sci.spw0.cube.I.manual.mask'
-log_name='spectrum.txt'
+image_name = 'member.uid___A001_X133d_X3abb.HOPS-007_sci.spw3.cube.I.manual.image.pbcor'
+mask_name = 'member.uid___A001_X133d_X3abb.HOPS-007_sci.spw3.cube.I.manual.mask'
+end_name = 'spw3'
+log_name='spectrum_'+end_name+'.txt'
 
-cube  =  image_cube(image_name, mask_name)
+cube  =  image_cube(image_name, mask_name, end_name)
 cube.make_spectrum(log_name)
 
 spect = spectrum(log_name)
