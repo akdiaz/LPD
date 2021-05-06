@@ -2,14 +2,15 @@
 import numpy as np
 import tempfile
 
-class image_cube:
-    '''This is a image_cube class. It is a CASA image with RA, DEC, and frequency axis.'''
+class ImageCube:
+    '''A CASA image with RA, DEC, and frequency axis, with its associated mask.'''
     
     def __init__(self, image_name, mask_name, end_name):
         self.image = 'cube_'+end_name+'.image'
         self.mask = 'cube_'+end_name+'.mask'
         importfits(fitsimage=image_name+'.fits',imagename=self.image)
         importfits(fitsimage=mask_name+'.fits',imagename=self.mask)
+        #these images should be deleted later
 
     def get_spectrum(self,log_name):
         with tempfile.NamedTemporaryFile(delete=False, suffix='_{}.log'.format(end_name)) as fd:
@@ -17,11 +18,11 @@ class image_cube:
         specflux(imagename=self.image, mask=self.mask, unit='MHz',logfile=log_file, overwrite=True)
         return spectrum(log_file)
 
-class spectrum:
+class Spectrum:
     '''This is a spectrum class. Initialises with a text file.'''
     
     def  __init__(self,log_name):
-        ch, n_pix, freq, vel, flux = np.loadtxt(log_name, unpack = True)
+        ch, _, freq, vel, flux = np.loadtxt(log_name, unpack = True)
         self.channel = ch
         self.frequency = freq
         self.velocity = vel
