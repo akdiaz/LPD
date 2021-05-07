@@ -13,11 +13,11 @@ class ImageCube:
         importfits(fitsimage=image_name+'.fits',imagename=self.image, overwrite=True)
         importfits(fitsimage=mask_name+'.fits',imagename=self.mask, overwrite=True)
         #these images should be deleted later
-
+        #do I want to keep the spectrum?
         
 
     def get_spectrum(self,end_name):
-        with tempfile.NamedTemporaryFile(delete=False, suffix='_{}.log'.format(end_name)) as fd:
+        with tempfile.NamedTemporaryFile(delete=False, suffix='_{}.txt'.format(end_name)) as fd:
             log_file = fd.name
         specflux(imagename=self.image, mask=self.mask, unit='MHz',logfile=log_file, overwrite=True)
         return Spectrum(log_file)
