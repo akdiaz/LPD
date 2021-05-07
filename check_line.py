@@ -26,6 +26,6 @@ class Spectrum:
     '''This is a spectrum class. Initialises with a text file.'''
     
     def  __init__(self,log_file):
-        self.frequency, self.flux = np.loadtxt(log_file, usecols=(3,5), unpack = True)
+        self.frequency, self.flux = np.loadtxt(log_file, usecols=(2,4), unpack = True)
     
     #def make_plot
