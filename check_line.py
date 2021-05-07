@@ -7,11 +7,14 @@ class ImageCube:
     '''A CASA image with RA, DEC, and frequency axis, with its associated mask.'''
     
     def __init__(self, image_name, mask_name, end_name):
+        #check that mask image is not just 0s
         self.image = 'cube_'+end_name+'.image'
         self.mask = 'cube_'+end_name+'.mask'
         importfits(fitsimage=image_name+'.fits',imagename=self.image, overwrite=True)
         importfits(fitsimage=mask_name+'.fits',imagename=self.mask, overwrite=True)
         #these images should be deleted later
+
+        
 
     def get_spectrum(self,end_name):
         with tempfile.NamedTemporaryFile(delete=False, suffix='_{}.log'.format(end_name)) as fd:
@@ -30,14 +33,3 @@ class Spectrum:
         self.flux_density = flux
     
     #def make_plot
-
-
-#image_name = 'member.uid___A001_X133d_X3abb.HOPS-007_sci.spw3.cube.I.manual.image.pbcor'
-#mask_name = 'member.uid___A001_X133d_X3abb.HOPS-007_sci.spw3.cube.I.manual.mask'
-#end_name = 'spw3'
-#log_name='spectrum_'+end_name+'.txt'
-
-#check that mask image is not just 0s
-
-#cube  = ImageCube(image_name, mask_name, end_name)
-#spect = cube.get_spectrum(log_name)
