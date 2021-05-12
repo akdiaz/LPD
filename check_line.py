@@ -1,6 +1,7 @@
-#to be run inside CASA
+#to be run inside CASA 6.1
 import numpy as np
 import tempfile
+import matplotlib.pyplot as plt
 from casatasks import *
 
 class ImageCube:
@@ -28,4 +29,21 @@ class Spectrum:
     def  __init__(self,log_file):
         self.frequency, self.flux = np.loadtxt(log_file, usecols=(2,4), unpack = True)
     
-    #def make_plot
+    #this doesn't work with my instalation of CASA 6.1
+    def make_plot(self):
+        fig, ax = plt.subplots()
+        ax.plot(self.frequency, self.flux)
+        fig.savefig(log_file[:-4]+'.png',bbox_inches='tight')
+
+    def potential_lines(self, list_file):
+        transition_frequencies = np.loadtxt(list_file, usecols=1)
+        species, transitions = np.loadtxt(list_file, usecols=(0,2),dtype='str', unpack=True)
+        f_min = min(self.frequency)
+        f_max = max(self.frequency)
+        potential_lines=[]
+        for index, f in enumerate(transition_frequencies):
+            if f_min <= f <= f_max:
+                potential_lines.append([species[index], transitions[index], f])
+        return potential_lines
+
+
