@@ -1,6 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.signal as sig
+from scipy.optimize import curve_fit
+
+WIDTH_LINE = 50 #now is in channels, must be in velocity or frequency = 50
+SNR = 3 #signal-to-noise ratio of the peaks to be detected
+
+#probably need to use two gaussians to account for the absorption
+def gaussian(x, a, x0, sigma):
+    y = a*np.exp(-(x-x0)**2/(2*sigma**2))
+    return y
 
 class Spectrum:
     '''This is a spectrum class. Initialises with a text file.'''
@@ -20,23 +29,26 @@ class Spectrum:
         return potential_lines
 
 
-    def find_lines(self,separation=50):
-        #separation should be in velocity
+    def find_lines(self,separation=WIDTH_LINE):
+        #separation is in channels, mind this when changing width_line to velocity
         rms = np.std(self.flux)
-        peaks = sig.find_peaks(self.flux, height=3*rms,distance=separation)
+        peaks = sig.find_peaks(self.flux, height=SNR*rms,distance=separation)
         position_peaks = peaks[0]
         frequency_peaks = [self.frequency[pos] for pos in position_peaks] 
         flux_peaks = [self.flux[pos] for pos in position_peaks]
         return rms, frequency_peaks, flux_peaks
         
-    #def get_line_parameters(self):
-    #    norm.fit()
+    def get_line_parameters(self, flux_peak, frequency_peak, width=WIDTH_LINE):
+        popt, pcov = curve_fit(gaussian, self.frequency, self.flux, p0 = [flux_peak, frequency_peak, width])
+        return popt, pcov
         
         
 #this is just for reference while I code        
-    def make_plot(self,log_file, lines, rms, frequency_peaks, flux_peaks):
+    def make_plot(self,log_file, lines, rms, frequency_peaks, flux_peaks, popt):
         fig, ax = plt.subplots()
-        ax.plot(self.frequency, self.flux)
+        #plot the spectrum
+        ax.plot(self.frequency, self.flux, label='data')
+        #plot the peaks
         ax.scatter(frequency_peaks,flux_peaks,c='r')
         x_lims = ax.get_xlim()
         ax.hlines(rms,x_lims[0],x_lims[1])
@@ -45,6 +57,10 @@ class Spectrum:
         for l in lines:
           ax.vlines(l[2], y_lims[0], y_lims[1] ,'r')
           ax.annotate(' '.join([l[0],l[1]]),(l[2],0.9),xycoords=('data','axes fraction'))
+        #plot the gaussian fitting
+        gaussian_flux = gaussian(self.frequency, *popt)
+        ax.plot(self.frequency, gaussian_flux, label='fit')
+        ax.legend()
         fig.savefig(log_file[:-4]+'.png',bbox_inches='tight')
         
         
