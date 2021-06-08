@@ -29,12 +29,14 @@ class Spectrum:
         flux_peaks = [self.flux[pos] for pos in pos_peaks]
         return rms, freq_peaks, flux_peaks
         
+#this is just for reference while I code        
     def make_plot(self,log_file, lines, rms, freq_peaks, flux_peaks):
         fig, ax = plt.subplots()
         ax.plot(self.frequency, self.flux)
         ax.scatter(freq_peaks,flux_peaks,c='r')
         x_lims = ax.get_xlim()
         ax.hlines(rms,x_lims[0],x_lims[1])
+        ax.annotate(f'rms = {rms:.2f}',(0.1,rms+rms/10),xycoords=('axes fraction','data'))
         y_lims = ax.get_ylim()
         for l in lines:
           ax.vlines(l[2], y_lims[0], y_lims[1] ,'r')
