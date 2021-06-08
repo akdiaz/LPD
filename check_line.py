@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.signal as sig
 
 class Spectrum:
     '''This is a spectrum class. Initialises with a text file.'''
@@ -26,3 +27,17 @@ class Spectrum:
           ax.vlines(l[2], y_lims[0], y_lims[1] ,'r')
           ax.annotate(' '.join([l[0],l[1]]),(l[2],0.9),xycoords=('data','axes fraction'))
         fig.savefig(log_file[:-4]+'.png',bbox_inches='tight')
+
+    def find_lines(self,separation=50):
+        #separation should be in velocity
+        rms = np.std(self.flux)
+        peaks = sig.find_peaks(self.flux, height=3*rms,distance=separation)
+        flux_peaks = [self.flux[pos] for pos in peaks[0]]
+        fig, ax = plt.subplots()
+        ax.plot(self.flux)
+        ax.scatter(peaks[0],flux_peaks,c='r')
+        x_lims = ax.get_xlim()
+        ax.hlines(rms,x_lims[0],x_lims[1])
+        fig.savefig('peaks.png',bbox_inches='tight')
+        
+        
