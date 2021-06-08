@@ -20,12 +20,12 @@ class Spectrum:
     def potential_lines(self, list_file):
         transition_frequencies = np.loadtxt(list_file, usecols=[1])
         species, transitions = np.loadtxt(list_file, usecols=(0,2),dtype='str', unpack=True)
-        f_min = min(self.frequency)
-        f_max = max(self.frequency)
+        minimum = min(self.frequency)
+        maximum = max(self.frequency)
         potential_lines=[]
-        for index, f in enumerate(transition_frequencies):
-            if f_min <= f <= f_max:
-                potential_lines.append([species[index], transitions[index], f])
+        for index, frequency in enumerate(transition_frequencies):
+            if minimum <= frequency <= maximum:
+                potential_lines.append([species[index], transitions[index], frequency])
         return potential_lines
 
 
