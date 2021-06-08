@@ -5,3 +5,6 @@ temporal_outputs/
 *.fits
 *.image
 *.mask
+__pycache__/
+*.pyc
+*.pre
