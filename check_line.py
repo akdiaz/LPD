@@ -19,28 +19,26 @@ class Spectrum:
                 potential_lines.append([species[index], transitions[index], f])
         return potential_lines
 
-    def make_plot(self,log_file,lines):
-        fig, ax = plt.subplots()
-        ax.plot(self.frequency, self.flux)
-        y_lims = ax.get_ylim()
-        for l in lines:
-          ax.vlines(l[2], y_lims[0], y_lims[1] ,'r')
-          ax.annotate(' '.join([l[0],l[1]]),(l[2],0.9),xycoords=('data','axes fraction'))
-        fig.savefig(log_file[:-4]+'.png',bbox_inches='tight')
 
     def find_lines(self,separation=50):
         #separation should be in velocity
         rms = np.std(self.flux)
         peaks = sig.find_peaks(self.flux, height=3*rms,distance=separation)
         pos_peaks = peaks[0]
-        freq_peaks = [self.frequency[pos] for pos in pos_peaks]
+        freq_peaks = [self.frequency[pos] for pos in pos_peaks] 
         flux_peaks = [self.flux[pos] for pos in pos_peaks]
+        return rms, freq_peaks, flux_peaks
+        
+    def make_plot(self,log_file, lines, rms, freq_peaks, flux_peaks):
         fig, ax = plt.subplots()
-        ax.plot(self.flux)
-        ax.scatter(pos_peaks,flux_peaks,c='r')
+        ax.plot(self.frequency, self.flux)
+        ax.scatter(freq_peaks,flux_peaks,c='r')
         x_lims = ax.get_xlim()
         ax.hlines(rms,x_lims[0],x_lims[1])
-        fig.savefig('peaks.png',bbox_inches='tight')
-        return freq_peaks
+        y_lims = ax.get_ylim()
+        for l in lines:
+          ax.vlines(l[2], y_lims[0], y_lims[1] ,'r')
+          ax.annotate(' '.join([l[0],l[1]]),(l[2],0.9),xycoords=('data','axes fraction'))
+        fig.savefig(log_file[:-4]+'.png',bbox_inches='tight')
         
         
