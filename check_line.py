@@ -52,7 +52,8 @@ class Spectrum:
         ax.scatter(frequency_peaks,flux_peaks,c='r')
         x_lims = ax.get_xlim()
         ax.hlines(rms,x_lims[0],x_lims[1])
-        ax.annotate(f'rms = {rms:.2f}',(0.1,rms+rms/10),xycoords=('axes fraction','data'))
+        ax.annotate(f'rms = {rms:.2f}',(x_lims[0],rms+rms/10),xycoords='data')
+        #plot the potential lines
         y_lims = ax.get_ylim()
         for l in lines:
           ax.vlines(l[2], y_lims[0], y_lims[1] ,'r')
