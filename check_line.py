@@ -32,12 +32,15 @@ class Spectrum:
         #separation should be in velocity
         rms = np.std(self.flux)
         peaks = sig.find_peaks(self.flux, height=3*rms,distance=separation)
-        flux_peaks = [self.flux[pos] for pos in peaks[0]]
+        pos_peaks = peaks[0]
+        freq_peaks = [self.frequency[pos] for pos in pos_peaks]
+        flux_peaks = [self.flux[pos] for pos in pos_peaks]
         fig, ax = plt.subplots()
         ax.plot(self.flux)
-        ax.scatter(peaks[0],flux_peaks,c='r')
+        ax.scatter(pos_peaks,flux_peaks,c='r')
         x_lims = ax.get_xlim()
         ax.hlines(rms,x_lims[0],x_lims[1])
         fig.savefig('peaks.png',bbox_inches='tight')
+        return freq_peaks
         
         
