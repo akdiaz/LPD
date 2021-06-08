@@ -8,3 +8,5 @@ temporal_outputs/
 __pycache__/
 *.pyc
 *.pre
+*.txt
+*.png
