@@ -42,6 +42,20 @@ class Spectrum:
         popt, pcov = curve_fit(gaussian, self.frequency, self.flux, p0 = [flux_peak, frequency_peak, width])
         return popt, pcov
         
+    def match_lines(self, potential_lines, popt, tolerance):
+        potential_frequency = np.array([pot_line[2] for pot_line in potential_lines])
+        frequency_founded_lines = [popt[1]]
+        actual_lines=[]
+        for frequency in frequency_founded_lines:
+            distance = potential_frequency-frequency
+            index_minimum = np.argmin(distance)
+            if distance[index_minimum] < tolerance:
+                actual_lines.append(potential_lines[index_minimum])
+            else:
+                actual_lines.append('U')
+        return actual_lines
+       
+        
         
 #this is just for reference while I code        
     def make_plot(self,log_file, lines, rms, frequency_peaks, flux_peaks, popt):
