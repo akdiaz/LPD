@@ -18,6 +18,7 @@ class Spectrum:
         self.frequency, self.flux = np.loadtxt(log_file, usecols=(2,4), unpack = True)
     
     def potential_lines(self, list_file):
+        print('Finding expected lines in the spectrum...')
         transition_frequencies = np.loadtxt(list_file, usecols=[1])
         species, transitions = np.loadtxt(list_file, usecols=(0,2),dtype='str', unpack=True)
         minimum = min(self.frequency)
@@ -30,6 +31,7 @@ class Spectrum:
 
 
     def find_lines(self,separation=WIDTH_LINE):
+        print('Finding detected lines in the spectrum...')
         #separation is in channels, mind this when changing width_line to velocity
         rms = np.std(self.flux)
         peaks = sig.find_peaks(self.flux, height=SNR*rms,distance=separation)
@@ -39,10 +41,12 @@ class Spectrum:
         return rms, frequency_peaks, flux_peaks
         
     def get_line_parameters(self, flux_peak, frequency_peak, width=WIDTH_LINE):
+        print('Making Gaussian fits to the lines...')
         popt, pcov = curve_fit(gaussian, self.frequency, self.flux, p0 = [flux_peak, frequency_peak, width])
         return popt, pcov
         
     def match_lines(self, potential_lines, popt, tolerance):
+        print(f'Matching detected with expected lines using a tolerance of {tolerance} MHz...')
         potential_frequency = np.array([pot_line[2] for pot_line in potential_lines])
         frequency_founded_lines = [popt[1]]
         actual_lines=[]
@@ -56,6 +60,7 @@ class Spectrum:
         return actual_lines
        
     def write_parameters(self, actual_lines, popt, pcov):
+        print('Writing output file...')
         pcov = [pcov]
         popt = [popt]
         errors = [np.sqrt(matrix.diagonal()) for matrix in pcov]
@@ -88,6 +93,7 @@ class Spectrum:
         
 #this is just for reference while I code        
     def make_plot(self,log_file, lines, rms, frequency_peaks, flux_peaks, popt):
+        print('Making plot...')
         fig, ax = plt.subplots()
         #plot the spectrum
         ax.plot(self.frequency, self.flux, label='data')
