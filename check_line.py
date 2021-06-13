@@ -42,18 +42,25 @@ class Spectrum:
         
     def get_line_parameters(self, flux_peak, frequency_peak, width=WIDTH_LINE):
         print('Making Gaussian fits to the lines...')
-        popt, pcov = curve_fit(gaussian, self.frequency, self.flux, p0 = [flux_peak, frequency_peak, width])
+        popt = []
+        pcov = []
+        for flux, frequency in zip(flux_peak,frequency_peak):
+            popt_temporal, pcov_temporal = curve_fit(gaussian, self.frequency, self.flux, p0 = [flux, frequency, width])
+            popt.append(popt_temporal)
+            pcov.append(pcov_temporal)
         return popt, pcov
         
     def match_lines(self, potential_lines, popt, tolerance):
         print(f'Matching detected with expected lines using a tolerance of {tolerance} MHz...')
         potential_frequency = np.array([pot_line[2] for pot_line in potential_lines])
-        frequency_founded_lines = [popt[1]]
+        frequency_founded_lines = np.array([parameter[1] for parameter in popt])
+        print(f'>>>frequency of the detected lines is {frequency_founded_lines}')
         actual_lines=[]
         for frequency in frequency_founded_lines:
             distance = potential_frequency-frequency
+            print(f'>>>distance in MHz is {distance}')
             index_minimum = np.argmin(distance)
-            if distance[index_minimum] < tolerance:
+            if abs(distance[index_minimum]) < tolerance:
                 actual_lines.append(potential_lines[index_minimum])
             else:
                 actual_lines.append('U')
@@ -61,8 +68,6 @@ class Spectrum:
        
     def write_parameters(self, actual_lines, popt, pcov):
         print('Writing output file...')
-        pcov = [pcov]
-        popt = [popt]
         errors = [np.sqrt(matrix.diagonal()) for matrix in pcov]
         #need to add the unit, make the convertion from sigma to HPBW, and add velocities
         header = 'Species\tTransition\tFrequency\tRedshifted_Frequency\tError\tFlux\tError\tSigma\tError'        
@@ -108,8 +113,9 @@ class Spectrum:
           ax.vlines(l[2], y_lims[0], y_lims[1] ,'r')
           ax.annotate(' '.join([l[0],l[1]]),(l[2],0.9),xycoords=('data','axes fraction'))
         #plot the gaussian fitting
-        gaussian_flux = gaussian(self.frequency, *popt)
-        ax.plot(self.frequency, gaussian_flux, label='fit')
+        for index, fitted_parameters in enumerate(popt):
+            gaussian_flux = gaussian(self.frequency, *fitted_parameters)
+            ax.plot(self.frequency, gaussian_flux, label='fit_'+str(index))
         ax.legend()
         fig.savefig(log_file[:-4]+'.png',bbox_inches='tight')
         
