@@ -63,7 +63,7 @@ class Spectrum:
             if abs(distance[index_minimum]) < tolerance:
                 actual_lines.append(potential_lines[index_minimum])
             else:
-                actual_lines.append('U')
+                actual_lines.append(['U','U','0'])
         return actual_lines
        
     def write_parameters(self, actual_lines, popt, pcov):
@@ -109,9 +109,13 @@ class Spectrum:
         ax.annotate(f'rms = {rms:.2f}',(x_lims[0],rms+rms/10),xycoords='data')
         #plot the potential lines
         y_lims = ax.get_ylim()
-        for l in lines:
-          ax.vlines(l[2], y_lims[0], y_lims[1] ,'r')
-          ax.annotate(' '.join([l[0],l[1]]),(l[2],0.9),xycoords=('data','axes fraction'))
+        for l, fitted_parameters in zip(lines, popt):
+            if l[0] == 'U':
+                ax.vlines(fitted_parameters[1], y_lims[0], y_lims[1] ,'r')
+                ax.annotate(' '.join([l[0],l[1]]),(fitted_parameters[1],0.9),xycoords=('data','axes fraction'))   
+            else:
+                ax.vlines(l[2], y_lims[0], y_lims[1] ,'r')
+                ax.annotate(' '.join([l[0],l[1]]),(l[2],0.9),xycoords=('data','axes fraction'))
         #plot the gaussian fitting
         for index, fitted_parameters in enumerate(popt):
             gaussian_flux = gaussian(self.frequency, *fitted_parameters)
