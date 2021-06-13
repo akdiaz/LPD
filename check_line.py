@@ -51,14 +51,11 @@ class Spectrum:
         return popt, pcov
         
     def match_lines(self, potential_lines, popt, tolerance):
-        print(f'Matching detected with expected lines using a tolerance of {tolerance} MHz...')
         potential_frequency = np.array([pot_line[2] for pot_line in potential_lines])
         frequency_founded_lines = np.array([parameter[1] for parameter in popt])
-        print(f'>>>frequency of the detected lines is {frequency_founded_lines}')
         actual_lines=[]
         for frequency in frequency_founded_lines:
             distance = potential_frequency-frequency
-            print(f'>>>distance in MHz is {distance}')
             index_minimum = np.argmin(distance)
             if abs(distance[index_minimum]) < tolerance:
                 actual_lines.append(potential_lines[index_minimum])
