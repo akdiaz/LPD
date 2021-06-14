@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 import astropy.units as u
 
 RMS = 1
-VLRS = 8 #km/s 
-FREQ_WINDOW = 100 #MHz
-X_RESOLUTION = 0.1
+VLRS = 1 #km/s 
+FREQUENCY_WINDOW = 100 #MHz
+FREQUENCY_RESOLUTION = 0.1
 # gaussian line parameters
 GAUSS_PEAK = 10
 GAUSS_CENTER = 330587.8671 #in MHz
@@ -22,14 +22,14 @@ def redshifted_frequency(f, vlrs):
     vlrs = vlrs*u.km/u.s # velocity of the source
     relativistic_equiv = u.doppler_relativistic(f_rest)
     f_shifted = vlrs.to(u.MHz, equivalencies=relativistic_equiv)
-    return f_shifted.value    
+    return f_shifted.value
     
     
-def write_spectrum(x,y):
+def write_spectrum(x_freq,x_vel,y):
     header = 'Synthetic spectrum generated for testing\nChannel\tnumber_of_unmasked_pixels\tfrequency_(MHz)\tVelocity_(km/s)\tFlux_density_(Jy)'
-    channel = np.arange(x.size)
-    zeros = np.zeros(x.size)
-    data = np.column_stack((channel, zeros, x, zeros, y))
+    channel = np.arange(x_freq.size)
+    zeros = np.zeros(x_freq.size)
+    data = np.column_stack((channel, zeros, x_freq, x_vel, y))
     fmt = ['%i']*2 + ['%.5f']*3
     np.savetxt('spectrum_golden.txt', data, header=header, fmt=fmt)
 
@@ -37,15 +37,27 @@ def write_spectrum(x,y):
 redshifted_freq = redshifted_frequency(GAUSS_CENTER, VLRS)
 
 #generate data
-x = np.arange(redshifted_freq-FREQ_WINDOW/2, redshifted_freq+FREQ_WINDOW/2, X_RESOLUTION)
-y = gaussian(x, GAUSS_PEAK, redshifted_freq, GAUSS_SIGMA)
-noise = np.random.normal(0,RMS/2,x.size)
+x_freq = np.arange(redshifted_freq-FREQUENCY_WINDOW/2, redshifted_freq+FREQUENCY_WINDOW/2, FREQUENCY_RESOLUTION)
+y = gaussian(x_freq, GAUSS_PEAK, redshifted_freq, GAUSS_SIGMA)
+noise = np.random.normal(0,RMS/2,x_freq.size)
 y_noise = y+noise
 
+#find velocity resolution and make velocity column
+x_vel_resolution = redshifted_frequency(FREQUENCY_RESOLUTION, VLRS)
+velocity_window = FREQUENCY_WINDOW * x_vel_resolution/FREQUENCY_RESOLUTION
+x_vel = np.arange(VLRS-velocity_window/2, VLRS+velocity_window/2, x_vel_resolution)
+
 #plot data
-fig, ax = plt.subplots()
-ax.plot(x,y_noise)
+fig, ax = plt.subplots(2,1)
+ax[0].plot(x_freq,y_noise)
+ax[0].set_xlabel('Frequency (MHz)')
+ax[1].plot(x_vel,y_noise)
+ax[1].set_xlabel('Velocity (km/s)')
+y_label = 'Flux (Jy)'
+ax[0].set_ylabel(y_label)
+ax[1].set_ylabel(y_label)
+fig.tight_layout() 
 fig.savefig('golden_spectrum_synth.png',bbox_inches='tight')
 
 #save spectrum
-write_spectrum(x,y_noise)
+write_spectrum(x_freq, x_vel, y_noise)
