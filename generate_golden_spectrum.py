@@ -1,19 +1,29 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import astropy.units as u
 
 RMS = 1
-X_MIN = 330500
-X_MAX = 330674
+VLRS = 8 #km/s 
+FREQ_WINDOW = 100 #MHz
 X_RESOLUTION = 0.1
 # gaussian line parameters
 GAUSS_PEAK = 10
-GAUSS_CENTER = 330587.8671
+GAUSS_CENTER = 330587.8671 #in MHz
 GAUSS_SIGMA = 2.5
 
 
 def gaussian(x, a, x0, sigma):
     y = a*np.exp(-(x-x0)**2/(2*sigma**2))
     return y
+
+def redshifted_frequency(f, vlrs):
+    ''' Assumes (for now) rest frequency (f) in MHz and velocity of the source (vlrs) in km/s.'''
+    f_rest = f*u.MHz #rest frequency
+    vlrs = vlrs*u.km/u.s # velocity of the source
+    relativistic_equiv = u.doppler_relativistic(f_rest)
+    f_shifted = vlrs.to(u.MHz, equivalencies=relativistic_equiv)
+    return f_shifted.value    
+    
     
 def write_spectrum(x,y):
     header = 'Synthetic spectrum generated for testing\nChannel\tnumber_of_unmasked_pixels\tfrequency_(MHz)\tVelocity_(km/s)\tFlux_density_(Jy)'
@@ -23,10 +33,12 @@ def write_spectrum(x,y):
     fmt = ['%i']*2 + ['%.5f']*3
     np.savetxt('spectrum_golden.txt', data, header=header, fmt=fmt)
 
+#becouse of Doppler effect
+redshifted_freq = redshifted_frequency(GAUSS_CENTER, VLRS)
 
 #generate data
-x = np.arange(X_MIN, X_MAX, X_RESOLUTION)
-y = gaussian(x, GAUSS_PEAK, GAUSS_CENTER, GAUSS_SIGMA)
+x = np.arange(redshifted_freq-FREQ_WINDOW/2, redshifted_freq+FREQ_WINDOW/2, X_RESOLUTION)
+y = gaussian(x, GAUSS_PEAK, redshifted_freq, GAUSS_SIGMA)
 noise = np.random.normal(0,RMS/2,x.size)
 y_noise = y+noise
 
