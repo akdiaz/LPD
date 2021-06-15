@@ -34,7 +34,7 @@ def write_spectrum(x_freq,x_vel,y):
     zeros = np.zeros(x_freq.size)
     data = np.column_stack((channel, zeros, x_freq, x_vel, y))
     fmt = ['%i']*2 + ['%.5f']*3
-    np.savetxt('spectrum_golden_synth_vlrs_{VLRS}.txt', data, header=header, fmt=fmt)
+    np.savetxt(f'spectrum_golden_synth_vlrs_{VLRS}.txt', data, header=header, fmt=fmt)
 
 #becouse of Doppler effect
 redshifted_freq = redshifted_frequency(GAUSS_CENTER, VLRS)
