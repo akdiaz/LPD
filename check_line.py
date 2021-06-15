@@ -4,7 +4,7 @@ import scipy.signal as sig
 from scipy.optimize import curve_fit
 from sys import exit
 
-WIDTH_LINE = 10 #in km/s
+WIDTH_LINE = 50 #in channels
 SNR = 3 #signal-to-noise ratio of the peaks to be detected
 
 #probably need to use two gaussians to account for the absorption
@@ -57,9 +57,7 @@ class Spectrum:
         
     def match_lines(self, potential_lines, popt, tolerance):
         potential_frequency = np.array([pot_line[2] for pot_line in potential_lines])
-        print(f'potential lines are {potential_lines}')
         frequency_founded_lines = np.array([parameter[1] for parameter in popt])
-        print(f'detected lines are in {frequency_founded_lines}')
         actual_lines=[]
         for frequency in frequency_founded_lines:
             distance = potential_frequency-frequency
