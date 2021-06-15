@@ -10,9 +10,9 @@ VLRS = float(vlrs) #km/s
 FREQUENCY_WINDOW = 100 #MHz
 FREQUENCY_RESOLUTION = 0.1
 # gaussian line parameters
-GAUSS_PEAK = 10
-GAUSS_CENTER = 330587.8671 #in MHz
-GAUSS_SIGMA = 2.5
+GAUSS_PEAK = [10]
+GAUSS_CENTER = [330587.8671] #in MHz
+GAUSS_SIGMA = [2.5]
 
 
 def gaussian(x, a, x0, sigma):
@@ -38,14 +38,20 @@ def write_spectrum(x_freq,x_vel,y):
 
 #becouse of Doppler effect
 redshifted_freq = redshifted_frequency(GAUSS_CENTER, VLRS)
+central_freq = np.mean(redshifted_freq)
 
 #generate data
-x_freq = np.arange(redshifted_freq-FREQUENCY_WINDOW/2, redshifted_freq+FREQUENCY_WINDOW/2+FREQUENCY_RESOLUTION, FREQUENCY_RESOLUTION)
-y = gaussian(x_freq, GAUSS_PEAK, redshifted_freq, GAUSS_SIGMA)
-noise = np.random.normal(0,RMS/2,x_freq.size)
-y_noise = y+noise
+x_freq = np.arange(central_freq-FREQUENCY_WINDOW/2, central_freq+FREQUENCY_WINDOW/2+FREQUENCY_RESOLUTION, FREQUENCY_RESOLUTION)
 
-#find velocity resolution and make velocity column
+y = np.zeros(x_freq.size)
+for peak, center, sigma in zip(GAUSS_PEAK, redshifted_freq, GAUSS_SIGMA):
+    y = y + gaussian(x_freq, peak, center, sigma)
+
+noise = np.random.normal(0, RMS/2, x_freq.size)
+y_noise = y + noise
+
+#find velocity resolution and make velocity column.
+'''this implementation is equivalent to make a cube with the rest frequency equal to central_freq. i.e. the central velocity channel will be equal to VLRS'''
 x_vel_resolution = -1 * redshifted_frequency(FREQUENCY_RESOLUTION, VLRS)
 velocity_window = FREQUENCY_WINDOW * x_vel_resolution/FREQUENCY_RESOLUTION
 x_vel = np.linspace(VLRS-velocity_window/2, VLRS+velocity_window/2, x_freq.size)
