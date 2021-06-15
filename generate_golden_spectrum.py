@@ -1,9 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import astropy.units as u
+import sys
+
+__, vlrs = sys.argv 
 
 RMS = 1
-VLRS = 1 #km/s 
+VLRS = float(vlrs) #km/s
 FREQUENCY_WINDOW = 100 #MHz
 FREQUENCY_RESOLUTION = 0.1
 # gaussian line parameters
@@ -31,13 +34,13 @@ def write_spectrum(x_freq,x_vel,y):
     zeros = np.zeros(x_freq.size)
     data = np.column_stack((channel, zeros, x_freq, x_vel, y))
     fmt = ['%i']*2 + ['%.5f']*3
-    np.savetxt('spectrum_golden.txt', data, header=header, fmt=fmt)
+    np.savetxt('spectrum_golden_synth_vlrs_{VLRS}.txt', data, header=header, fmt=fmt)
 
 #becouse of Doppler effect
 redshifted_freq = redshifted_frequency(GAUSS_CENTER, VLRS)
 
 #generate data
-x_freq = np.arange(redshifted_freq-FREQUENCY_WINDOW/2, redshifted_freq+FREQUENCY_WINDOW/2, FREQUENCY_RESOLUTION)
+x_freq = np.arange(redshifted_freq-FREQUENCY_WINDOW/2, redshifted_freq+FREQUENCY_WINDOW/2+FREQUENCY_RESOLUTION, FREQUENCY_RESOLUTION)
 y = gaussian(x_freq, GAUSS_PEAK, redshifted_freq, GAUSS_SIGMA)
 noise = np.random.normal(0,RMS/2,x_freq.size)
 y_noise = y+noise
@@ -45,7 +48,7 @@ y_noise = y+noise
 #find velocity resolution and make velocity column
 x_vel_resolution = redshifted_frequency(FREQUENCY_RESOLUTION, VLRS)
 velocity_window = FREQUENCY_WINDOW * x_vel_resolution/FREQUENCY_RESOLUTION
-x_vel = np.arange(VLRS-velocity_window/2, VLRS+velocity_window/2, x_vel_resolution)
+x_vel = np.arange(VLRS-velocity_window/2, VLRS+velocity_window/2+x_vel_resolution, x_vel_resolution)
 
 #plot data
 fig, ax = plt.subplots(2,1)
@@ -57,7 +60,7 @@ y_label = 'Flux (Jy)'
 ax[0].set_ylabel(y_label)
 ax[1].set_ylabel(y_label)
 fig.tight_layout() 
-fig.savefig('golden_spectrum_synth.png',bbox_inches='tight')
+fig.savefig(f'golden_spectrum_synth_vlrs_{VLRS}.png',bbox_inches='tight')
 
 #save spectrum
 write_spectrum(x_freq, x_vel, y_noise)
