@@ -4,7 +4,7 @@ import scipy.signal as sig
 from scipy.optimize import curve_fit
 from sys import exit
 
-WIDTH_LINE = 50 #now is in channels, must be in velocity or frequency = 50
+WIDTH_LINE = 10 #in km/s
 SNR = 3 #signal-to-noise ratio of the peaks to be detected
 
 #probably need to use two gaussians to account for the absorption
@@ -17,6 +17,8 @@ class Spectrum:
     
     def  __init__(self,log_file):
         self.frequency, self.velocity, self.flux = np.loadtxt(log_file, usecols=(2,3,4), unpack = True)
+        self.frequency_resolution = self.frequency[1]-self.frequency[0]
+        self.velocity_resolution = self.velocity[1]-self.velocity[0]
     
     def potential_lines(self, list_file):
         print('Finding expected lines in the spectrum...')
