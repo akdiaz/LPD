@@ -46,9 +46,9 @@ noise = np.random.normal(0,RMS/2,x_freq.size)
 y_noise = y+noise
 
 #find velocity resolution and make velocity column
-x_vel_resolution = redshifted_frequency(FREQUENCY_RESOLUTION, VLRS)
+x_vel_resolution = -1 * redshifted_frequency(FREQUENCY_RESOLUTION, VLRS)
 velocity_window = FREQUENCY_WINDOW * x_vel_resolution/FREQUENCY_RESOLUTION
-x_vel = np.arange(VLRS-velocity_window/2, VLRS+velocity_window/2+x_vel_resolution, x_vel_resolution)
+x_vel = np.linspace(VLRS-velocity_window/2, VLRS+velocity_window/2, x_freq.size)
 
 #plot data
 fig, ax = plt.subplots(2,1)
@@ -56,6 +56,7 @@ ax[0].plot(x_freq,y_noise)
 ax[0].set_xlabel('Frequency (MHz)')
 ax[1].plot(x_vel,y_noise)
 ax[1].set_xlabel('Velocity (km/s)')
+ax[1].invert_xaxis()
 y_label = 'Flux (Jy)'
 ax[0].set_ylabel(y_label)
 ax[1].set_ylabel(y_label)
