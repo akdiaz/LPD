@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.signal as sig
 from scipy.optimize import curve_fit
+from sys import exit
 
 WIDTH_LINE = 50 #now is in channels, must be in velocity or frequency = 50
 SNR = 3 #signal-to-noise ratio of the peaks to be detected
@@ -27,6 +28,8 @@ class Spectrum:
         for index, frequency in enumerate(transition_frequencies):
             if minimum <= frequency <= maximum:
                 potential_lines.append([species[index], transitions[index], frequency])
+        if len(potential_lines) == 0:
+            exit('There is no potential lines in the frequency range of the spectrum. Edit the file <<lines.txt>>.')
         return potential_lines
 
 
@@ -52,7 +55,9 @@ class Spectrum:
         
     def match_lines(self, potential_lines, popt, tolerance):
         potential_frequency = np.array([pot_line[2] for pot_line in potential_lines])
+        print(f'potential lines are {potential_lines}')
         frequency_founded_lines = np.array([parameter[1] for parameter in popt])
+        print(f'detected lines are in {frequency_founded_lines}')
         actual_lines=[]
         for frequency in frequency_founded_lines:
             distance = potential_frequency-frequency
