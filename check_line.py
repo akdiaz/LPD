@@ -12,13 +12,13 @@ def gaussian(x, a, x0, sigma):
     y = a*np.exp(-(x-x0)**2/(2*sigma**2))
     return y
     
-def match_lines(potential_lines, detected_lines_frequency, tolerance):
+def match_lines(potential_lines, detected_lines_frequency):
     potential_frequency = np.array([pot_line[2] for pot_line in potential_lines])
     actual_lines=[]
     for frequency in detected_lines_frequency:
         distance = potential_frequency-frequency
         index_minimum = np.argmin(distance)
-        if abs(distance[index_minimum]) < tolerance:
+        if abs(distance[index_minimum]) < TOLERANCE:
             actual_lines.append(potential_lines[index_minimum])
         else:
             actual_lines.append(['U','U','0'])
