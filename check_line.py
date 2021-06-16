@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import scipy.signal as sig
 from scipy.optimize import curve_fit
 from sys import exit
+from functools import lru_cache
 
 WIDTH_LINE = 50 #in channels
 SNR = 3 #signal-to-noise ratio of the peaks to be detected
@@ -34,16 +35,22 @@ class Spectrum:
             exit('There is no potential lines in the frequency range of the spectrum. Edit the file <<lines.txt>>.')
         return potential_lines
 
+    @property
+    @lru_cache(10)
+    def rms(self):
+        print('Finding rms of the spectrum...')
+        values, edges = np.histogram(self.flux, bins=100)
+        popt, _ = curve_fit(gaussian, edges[:-1], values, p0 = [max(self.flux), 0, 1])
+        return abs(popt[-1])
 
     def find_lines(self,separation=WIDTH_LINE):
         print('Finding detected lines in the spectrum...')
         #separation is in channels, mind this when changing width_line to velocity
-        rms = np.std(self.flux)
-        peaks = sig.find_peaks(self.flux, height=SNR*rms,distance=separation)
+        peaks = sig.find_peaks(self.flux, height=SNR*self.rms,distance=separation)
         position_peaks = peaks[0]
         frequency_peaks = [self.frequency[pos] for pos in position_peaks] 
         flux_peaks = [self.flux[pos] for pos in position_peaks]
-        return rms, frequency_peaks, flux_peaks
+        return frequency_peaks, flux_peaks
         
     def get_line_parameters(self, flux_peak, frequency_peak, width=WIDTH_LINE):
         print('Making Gaussian fits to the lines...')
@@ -107,8 +114,8 @@ class Spectrum:
         #plot the peaks
         ax.scatter(frequency_peaks,flux_peaks,c='r')
         x_lims = ax.get_xlim()
-        ax.hlines(rms,x_lims[0],x_lims[1])
-        ax.annotate(f'rms = {rms:.2f}',(x_lims[0],rms+rms/10),xycoords='data')
+        ax.hlines(self.rms, x_lims[0],x_lims[1])
+        ax.annotate(f'rms = {self.rms:.2f}',(x_lims[0],self.rms+self.rms/10),xycoords='data')
         #plot the potential lines
         y_lims = ax.get_ylim()
         for l, fitted_parameters in zip(lines, popt):
