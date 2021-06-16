@@ -1,6 +1,8 @@
 # LPD
 Line in Protoplanetary Disks. ALMA Advanced Archive Products.
 
-Script to be run inside CASA 6.1 to check if there is line detection in a product cube image.
-
-Needs the cube and the mask used during the cleaning, both in FITS format, and a list of molecular transitions to search for.
+First step:
+ Run main_step1.py inside CASA 6.1 to take the spectrum in a cube image, in a region defined by a mask image. Needs the cube and the mask, both in FITS format.
+ 
+Second step:
+ Run main_step2.py in Python3 to recognize the lines in the spectrum. Need the spectrum file (created in previous step) and a file with 'known lines' for frequency comparison.
