@@ -5,21 +5,17 @@ from scipy.optimize import curve_fit
 from sys import exit
 from functools import lru_cache
 
-WIDTH_LINE = 20 #in channels
-TOLERANCE = 2 #MHz
-SNR = 5 #signal-to-noise ratio of the peaks to be detected
-
 def gaussian(x, a, x0, sigma):
     y = a*np.exp(-(x-x0)**2/(2*sigma**2))
     return y
     
-def match_lines(potential_lines, detected_lines_frequency):
+def match_lines(potential_lines, detected_lines_frequency, tolerance):
     potential_frequency = np.array([pot_line[2] for pot_line in potential_lines])
     actual_lines=[]
     for frequency in detected_lines_frequency:
         distance = potential_frequency-frequency
         index_minimum = np.argmin(distance)
-        if abs(distance[index_minimum]) < TOLERANCE:
+        if abs(distance[index_minimum]) < tolerance:
             actual_lines.append(potential_lines[index_minimum])
         else:
             actual_lines.append(['U','U','0'])
@@ -57,10 +53,10 @@ class Spectrum:
         popt, _ = curve_fit(gaussian, edges[:-1], values, p0 = [max(self.flux), 0, 1])
         return abs(popt[-1])
 
-    def find_lines(self):
+    def find_lines(self, snr, width):
         print('Finding detected lines in the spectrum...')
         #separation is in channels, mind this when changing width_line to velocity
-        peaks = sig.find_peaks(self.flux, height=SNR*self.rms,distance=WIDTH_LINE)
+        peaks = sig.find_peaks(self.flux, height=snr*self.rms, distance=width)
         position_peaks = peaks[0]
         return self.frequency[position_peaks], self.velocity[position_peaks], self.flux[position_peaks]
         
