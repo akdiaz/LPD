@@ -12,6 +12,49 @@ SNR = 3 #signal-to-noise ratio of the peaks to be detected
 def gaussian(x, a, x0, sigma):
     y = a*np.exp(-(x-x0)**2/(2*sigma**2))
     return y
+    
+def match_lines(potential_lines, popt, tolerance):
+    potential_frequency = np.array([pot_line[2] for pot_line in potential_lines])
+    frequency_founded_lines = np.array([parameter[1] for parameter in popt])
+    actual_lines=[]
+    for frequency in frequency_founded_lines:
+        distance = potential_frequency-frequency
+        index_minimum = np.argmin(distance)
+        if abs(distance[index_minimum]) < tolerance:
+            actual_lines.append(potential_lines[index_minimum])
+        else:
+            actual_lines.append(['U','U','0'])
+    return actual_lines
+        
+def write_parameters(actual_lines, popt, pcov):
+        print('Writing output file...')
+        errors = [np.sqrt(matrix.diagonal()) for matrix in pcov]
+        #need to add the unit, make the convertion from sigma to HPBW, and add velocities
+        header = 'Species\tTransition\tFrequency\tRedshifted_Frequency\tError\tFlux\tError\tSigma\tError'        
+        molecules = np.array([i[0] for i in actual_lines]) 
+        transitions = np.array([i[1] for i in actual_lines])
+        frequencies = np.array([i[2] for i in actual_lines])
+        flux = np.array([i[0] for i in popt]) 
+        redshifted_frequencies = np.array([i[1] for i in popt])
+        sigma = np.array([i[2] for i in popt])
+        flux_error = np.array([i[0] for i in errors]) 
+        redshifted_frequencies_error = np.array([i[1] for i in errors])
+        sigma_error = np.array([i[2] for i in errors])
+        #format of columns in data
+        columns_dtype = [('molecule', 'U25'), ('transition', 'U25'), ('frequency', float), ('redshifted_frequency', float), ('redshifted_frequency_error', float), ('flux', float), ('flux_error', float), ('sigma', float), ('sigma_error', float)]
+        fmt = ['%s']*2+['%f']*7
+        #write data
+        data = np.zeros(molecules.size, dtype=columns_dtype)
+        data['molecule'] = molecules
+        data['transition'] = transitions
+        data['frequency'] = frequencies
+        data['redshifted_frequency'] = redshifted_frequencies
+        data['redshifted_frequency_error'] = redshifted_frequencies_error
+        data['flux'] = flux
+        data['flux_error'] = flux_error
+        data['sigma'] = sigma
+        data['sigma_error'] = sigma_error
+        np.savetxt('detected_lines.txt', data, header=header, fmt=fmt)
 
 class Spectrum:
     '''This is a spectrum class. Initialises with a text file.'''
@@ -61,52 +104,9 @@ class Spectrum:
             popt.append(popt_temporal)
             pcov.append(pcov_temporal)
         return popt, pcov
-        
-    def match_lines(self, potential_lines, popt, tolerance):
-        potential_frequency = np.array([pot_line[2] for pot_line in potential_lines])
-        frequency_founded_lines = np.array([parameter[1] for parameter in popt])
-        actual_lines=[]
-        for frequency in frequency_founded_lines:
-            distance = potential_frequency-frequency
-            index_minimum = np.argmin(distance)
-            if abs(distance[index_minimum]) < tolerance:
-                actual_lines.append(potential_lines[index_minimum])
-            else:
-                actual_lines.append(['U','U','0'])
-        return actual_lines
        
-    def write_parameters(self, actual_lines, popt, pcov):
-        print('Writing output file...')
-        errors = [np.sqrt(matrix.diagonal()) for matrix in pcov]
-        #need to add the unit, make the convertion from sigma to HPBW, and add velocities
-        header = 'Species\tTransition\tFrequency\tRedshifted_Frequency\tError\tFlux\tError\tSigma\tError'        
-        molecules = np.array([i[0] for i in actual_lines]) 
-        transitions = np.array([i[1] for i in actual_lines])
-        frequencies = np.array([i[2] for i in actual_lines])
-        flux = np.array([i[0] for i in popt]) 
-        redshifted_frequencies = np.array([i[1] for i in popt])
-        sigma = np.array([i[2] for i in popt])
-        flux_error = np.array([i[0] for i in errors]) 
-        redshifted_frequencies_error = np.array([i[1] for i in errors])
-        sigma_error = np.array([i[2] for i in errors])
-        #format of columns in data
-        columns_dtype = [('molecule', 'U25'), ('transition', 'U25'), ('frequency', float), ('redshifted_frequency', float), ('redshifted_frequency_error', float), ('flux', float), ('flux_error', float), ('sigma', float), ('sigma_error', float)]
-        fmt = ['%s']*2+['%f']*7
-        #write data
-        data = np.zeros(molecules.size, dtype=columns_dtype)
-        data['molecule'] = molecules
-        data['transition'] = transitions
-        data['frequency'] = frequencies
-        data['redshifted_frequency'] = redshifted_frequencies
-        data['redshifted_frequency_error'] = redshifted_frequencies_error
-        data['flux'] = flux
-        data['flux_error'] = flux_error
-        data['sigma'] = sigma
-        data['sigma_error'] = sigma_error
-        np.savetxt('detected_lines.txt', data, header=header, fmt=fmt)
-        
-#this is just for reference while I code        
-    def make_plot(self,log_file, lines, rms, frequency_peaks, flux_peaks, popt):
+    #this is just for reference while I code        
+    def make_plot(self, log_file, lines, frequency_peaks, flux_peaks, popt):
         print('Making plot...')
         fig, ax = plt.subplots()
         #plot the spectrum

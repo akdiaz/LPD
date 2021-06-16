@@ -1,7 +1,7 @@
 import check_line
 
 #need to couple name of spectrum in both scripts?
-spectrum_name='spectrum_golden_synth_vlrs_10.0.txt'
+spectrum_name='spectrum_spw0.txt'
 list_file='lines.txt'
 spectrum = check_line.Spectrum(spectrum_name)
 lines = spectrum.potential_lines(list_file)
