@@ -5,8 +5,9 @@ from scipy.optimize import curve_fit
 from sys import exit
 from functools import lru_cache
 
-WIDTH_LINE = 50 #in channels
-SNR = 3 #signal-to-noise ratio of the peaks to be detected
+WIDTH_LINE = 20 #in channels
+TOLERANCE = 2 #MHz
+SNR = 5 #signal-to-noise ratio of the peaks to be detected
 
 def gaussian(x, a, x0, sigma):
     y = a*np.exp(-(x-x0)**2/(2*sigma**2))
