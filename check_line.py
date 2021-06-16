@@ -27,8 +27,8 @@ def match_lines(potential_lines, detected_lines_frequency):
         
 def write_parameters(actual_lines, peak_frequency, peak_velocity, peak_flux):
         print('Writing output file...')
-        #need to add the unit, make the convertion from sigma to HPBW, and add velocities
-        #header = 'Species\tTransition\tFrequency\tPeak_Frequency\tPeak_Velocity\tPeak_Flux\tFlag'        
+        #need to add the unit, make the convertion from sigma to HPBW
+        header = 'Species\tTransition\tFrequency\tPeak_Frequency\tPeak_Velocity\tPeak_Flux\tFlag'
         molecules = np.array([i[0] for i in actual_lines]) 
         transitions = np.array([i[1] for i in actual_lines])
         frequencies = np.array([i[2] for i in actual_lines])
@@ -43,7 +43,7 @@ def write_parameters(actual_lines, peak_frequency, peak_velocity, peak_flux):
         data['peak_frequency'] = peak_frequency
         data['peak_velocity'] = peak_velocity
         data['peak_flux'] = peak_flux
-        np.savetxt('detected_lines.txt', data, fmt=fmt)
+        np.savetxt('detected_lines.txt', data, header=header, fmt=fmt)
 
 class Spectrum:
     '''This is a spectrum class. Initialises with a text file.'''
