@@ -5,8 +5,7 @@ spectrum_name='spectrum_spw0.txt'
 list_file='lines.txt'
 spectrum = check_line.Spectrum(spectrum_name)
 lines = spectrum.potential_lines(list_file)
-frequency_peaks, flux_peaks = spectrum.find_lines()
-popt, pcov = spectrum.get_line_parameters(flux_peaks, frequency_peaks, 50)
-actual_lines = check_line.match_lines(lines, popt, 1.5)
-check_line.write_parameters(actual_lines, popt, pcov)
-spectrum.make_plot(spectrum_name, actual_lines, frequency_peaks, flux_peaks, popt)
+peak_frequencies, peak_velocities, peak_fluxes = spectrum.find_lines()
+actual_lines = check_line.match_lines(lines, peak_frequencies, 1.5)
+check_line.write_parameters(actual_lines, peak_frequencies, peak_velocities, peak_fluxes)
+spectrum.make_plot(spectrum_name, actual_lines, peak_frequencies, peak_fluxes)

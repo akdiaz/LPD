@@ -8,16 +8,14 @@ from functools import lru_cache
 WIDTH_LINE = 50 #in channels
 SNR = 3 #signal-to-noise ratio of the peaks to be detected
 
-#probably need to use two gaussians to account for the absorption
 def gaussian(x, a, x0, sigma):
     y = a*np.exp(-(x-x0)**2/(2*sigma**2))
     return y
     
-def match_lines(potential_lines, popt, tolerance):
+def match_lines(potential_lines, detected_lines_frequency, tolerance):
     potential_frequency = np.array([pot_line[2] for pot_line in potential_lines])
-    frequency_founded_lines = np.array([parameter[1] for parameter in popt])
     actual_lines=[]
-    for frequency in frequency_founded_lines:
+    for frequency in detected_lines_frequency:
         distance = potential_frequency-frequency
         index_minimum = np.argmin(distance)
         if abs(distance[index_minimum]) < tolerance:
@@ -26,35 +24,25 @@ def match_lines(potential_lines, popt, tolerance):
             actual_lines.append(['U','U','0'])
     return actual_lines
         
-def write_parameters(actual_lines, popt, pcov):
+def write_parameters(actual_lines, peak_frequency, peak_velocity, peak_flux):
         print('Writing output file...')
-        errors = [np.sqrt(matrix.diagonal()) for matrix in pcov]
         #need to add the unit, make the convertion from sigma to HPBW, and add velocities
-        header = 'Species\tTransition\tFrequency\tRedshifted_Frequency\tError\tFlux\tError\tSigma\tError'        
+        #header = 'Species\tTransition\tFrequency\tPeak_Frequency\tPeak_Velocity\tPeak_Flux\tFlag'        
         molecules = np.array([i[0] for i in actual_lines]) 
         transitions = np.array([i[1] for i in actual_lines])
         frequencies = np.array([i[2] for i in actual_lines])
-        flux = np.array([i[0] for i in popt]) 
-        redshifted_frequencies = np.array([i[1] for i in popt])
-        sigma = np.array([i[2] for i in popt])
-        flux_error = np.array([i[0] for i in errors]) 
-        redshifted_frequencies_error = np.array([i[1] for i in errors])
-        sigma_error = np.array([i[2] for i in errors])
         #format of columns in data
-        columns_dtype = [('molecule', 'U25'), ('transition', 'U25'), ('frequency', float), ('redshifted_frequency', float), ('redshifted_frequency_error', float), ('flux', float), ('flux_error', float), ('sigma', float), ('sigma_error', float)]
-        fmt = ['%s']*2+['%f']*7
+        columns_dtype = [('molecule', 'U25'), ('transition', 'U25'), ('frequency', float), ('peak_frequency', float), ('peak_velocity', float), ('peak_flux', float)]
+        fmt = ['%s']*2+['%f']*4
         #write data
         data = np.zeros(molecules.size, dtype=columns_dtype)
         data['molecule'] = molecules
         data['transition'] = transitions
         data['frequency'] = frequencies
-        data['redshifted_frequency'] = redshifted_frequencies
-        data['redshifted_frequency_error'] = redshifted_frequencies_error
-        data['flux'] = flux
-        data['flux_error'] = flux_error
-        data['sigma'] = sigma
-        data['sigma_error'] = sigma_error
-        np.savetxt('detected_lines.txt', data, header=header, fmt=fmt)
+        data['peak_frequency'] = peak_frequency
+        data['peak_velocity'] = peak_velocity
+        data['peak_flux'] = peak_flux
+        np.savetxt('detected_lines.txt', data, fmt=fmt)
 
 class Spectrum:
     '''This is a spectrum class. Initialises with a text file.'''
@@ -91,22 +79,10 @@ class Spectrum:
         #separation is in channels, mind this when changing width_line to velocity
         peaks = sig.find_peaks(self.flux, height=SNR*self.rms,distance=separation)
         position_peaks = peaks[0]
-        frequency_peaks = [self.frequency[pos] for pos in position_peaks] 
-        flux_peaks = [self.flux[pos] for pos in position_peaks]
-        return frequency_peaks, flux_peaks
-        
-    def get_line_parameters(self, flux_peak, frequency_peak, width=WIDTH_LINE):
-        print('Making Gaussian fits to the lines...')
-        popt = []
-        pcov = []
-        for flux, frequency in zip(flux_peak,frequency_peak):
-            popt_temporal, pcov_temporal = curve_fit(gaussian, self.frequency, self.flux, p0 = [flux, frequency, width])
-            popt.append(popt_temporal)
-            pcov.append(pcov_temporal)
-        return popt, pcov
+        return self.frequency[position_peaks], self.velocity[position_peaks], self.flux[position_peaks]
        
     #this is just for reference while I code        
-    def make_plot(self, log_file, lines, frequency_peaks, flux_peaks, popt):
+    def make_plot(self, log_file, lines, frequency_peaks, flux_peaks):
         print('Making plot...')
         fig, ax = plt.subplots()
         #plot the spectrum
@@ -118,17 +94,13 @@ class Spectrum:
         ax.annotate(f'rms = {self.rms:.2f}',(x_lims[0],self.rms+self.rms/10),xycoords='data')
         #plot the potential lines
         y_lims = ax.get_ylim()
-        for l, fitted_parameters in zip(lines, popt):
+        for l, freq_peak in zip(lines, frequency_peaks):
             if l[0] == 'U':
-                ax.vlines(fitted_parameters[1], y_lims[0], y_lims[1] ,'r')
-                ax.annotate(' '.join([l[0],l[1]]),(fitted_parameters[1],0.9),xycoords=('data','axes fraction'))   
+                ax.vlines(freq_peak, y_lims[0], y_lims[1] ,'r')
+                ax.annotate(' '.join([l[0],l[1]]),(freq_peak, 0.9),xycoords=('data','axes fraction'))   
             else:
                 ax.vlines(l[2], y_lims[0], y_lims[1] ,'r')
                 ax.annotate(' '.join([l[0],l[1]]),(l[2],0.9),xycoords=('data','axes fraction'))
-        #plot the gaussian fitting
-        for index, fitted_parameters in enumerate(popt):
-            gaussian_flux = gaussian(self.frequency, *fitted_parameters)
-            ax.plot(self.frequency, gaussian_flux, label='fit_'+str(index))
         ax.legend()
         fig.savefig(log_file[:-4]+'.png',bbox_inches='tight')
         
