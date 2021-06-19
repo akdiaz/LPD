@@ -35,8 +35,7 @@ class Spectrum:
         print('Finding expected lines in the spectrum...')
         transition_frequencies = np.loadtxt(list_file, usecols=[1])
         species, transitions = np.loadtxt(list_file, usecols=(0,2),dtype='str', unpack=True)
-        minimum = min(self.frequency)
-        maximum = max(self.frequency)
+        minimum, *_, maximum = sorted(self.frequency)
         potential_lines=[]
         for index, frequency in enumerate(transition_frequencies):
             if minimum <= frequency <= maximum:
