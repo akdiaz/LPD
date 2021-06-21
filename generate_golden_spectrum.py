@@ -29,7 +29,7 @@ def redshifted_frequency(f, vlrs):
     
     
 def write_spectrum(x_freq,x_vel,y):
-    header = 'Synthetic spectrum generated for testing\nChannel\tnumber_of_unmasked_pixels\tfrequency_(MHz)\tVelocity_(km/s)\tFlux_density_(Jy)'
+    header = 'Synthetic spectrum generated for testing\n\n\nChannel\tnumber_of_unmasked_pixels\tfrequency_(MHz)\tVelocity_(km/s)\tFlux_density_(Jy)'
     channel = np.arange(x_freq.size)
     zeros = np.zeros(x_freq.size)
     data = np.column_stack((channel, zeros, x_freq, x_vel, y))
