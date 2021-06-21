@@ -8,8 +8,6 @@ parser.add_argument('--snr', type=float, help='Signal-to-noise ratio. Only peaks
 parser.add_argument('-s','--spectrum_file_name', type=str, help='Name of the file (including extension) with the spectrum to analyse.')
 parser.add_argument('-l','--known_lines_file_name', type=str, help='Name of the file (including extension) with the known lines.', default='lines.txt')
 
-TOLERANCE = 2 #units of input frequency
-
 if __name__ == "__main__": 
     args = parser.parse_args()
 
