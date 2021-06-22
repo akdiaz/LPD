@@ -55,8 +55,8 @@ class Spectrum:
 
     def find_lines(self, snr, width):
         print('Finding detected lines in the spectrum...')
-        #separation is in channels, mind this when changing width_line to velocity
-        peaks = sig.find_peaks(self.flux, height=snr*self.rms, distance=width)
+        separation = width / abs(self.velocity_resolution)
+        peaks = sig.find_peaks(self.flux, height=snr*self.rms, distance=separation)
         position_peaks = peaks[0]
         return self.frequency[position_peaks], self.velocity[position_peaks], self.flux[position_peaks]
         
