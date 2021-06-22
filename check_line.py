@@ -48,7 +48,7 @@ class Spectrum:
     @property
     @lru_cache(10)
     def rms(self):
-        print('Finding rms of the spectrum...')
+        print('\tFinding rms of the spectrum...')
         values, edges = np.histogram(self.flux, bins=100)
         popt, _ = curve_fit(gaussian, edges[:-1], values, p0 = [max(self.flux), 0, 1])
         return abs(popt[-1])
