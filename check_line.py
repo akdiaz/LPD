@@ -12,16 +12,17 @@ def gaussian(x, a, x0, sigma):
 def match_lines(potential_lines, detected_lines_frequency, tolerance):
     potential_frequency = np.array([pot_line[2] for pot_line in potential_lines])
     actual_lines=[]
-    for frequency in detected_lines_frequency:
-        distance = potential_frequency-frequency
-        index_minimum = np.argmin(distance)
-        if abs(distance[index_minimum]) < tolerance:
-            actual_lines.append(potential_lines[index_minimum])
+    for index, frequency in enumerate(detected_lines_frequency):
+        distances = potential_frequency-frequency
+        if min(abs(distances)) > tolerance:
+            actual_lines.append([index,'U','U','0'])
         else:
-            actual_lines.append(['U','U','0'])
+            for index_dist, dist in enumerate(distances):
+                if dist < tolerance:
+                    actual_lines.append([index]+potential_lines[index_dist])
     return actual_lines
     
-      
+   
 class Spectrum:
     '''This is a spectrum class. Initialises with a text file.'''
     
@@ -61,21 +62,26 @@ class Spectrum:
         
     def write_parameters(self, actual_lines, peak_frequency, peak_velocity, peak_flux):
         print('Writing output file...')
-        header = 'Species\tTransition\tFrequency\t'+f'Peak_{self.columns[0]}\tPeak_{self.columns[1]}\tPeak_{self.columns[2]}'
-        molecules = np.array([i[0] for i in actual_lines]) 
-        transitions = np.array([i[1] for i in actual_lines])
-        frequencies = np.array([i[2] for i in actual_lines])
+        header = 'Peak\tSpecies\tTransition\tFrequency\t'+f'Peak_{self.columns[0]}\tPeak_{self.columns[1]}\tPeak_{self.columns[2]}'
+        peaks = np.array([i[0] for i in actual_lines]) 
+        molecules = np.array([i[1] for i in actual_lines]) 
+        transitions = np.array([i[2] for i in actual_lines])
+        frequencies = np.array([i[3] for i in actual_lines])
+        peak_frequencies = [peak_frequency[p] for p in peaks]
+        peak_velocities = [peak_velocity[p] for p in peaks]
+        peak_fluxes = [peak_flux[p] for p in peaks]
         #format of columns in data
-        columns_dtype = [('molecule', 'U25'), ('transition', 'U25'), ('frequency', float), ('peak_frequency', float), ('peak_velocity', float), ('peak_flux', float)]
-        fmt = ['%s']*2+['%f']*4
+        columns_dtype = [('peak', 'int32'), ('molecule', 'U25'), ('transition', 'U25'), ('frequency', float), ('peak_frequency', float), ('peak_velocity', float), ('peak_flux', float)]
+        fmt = ['%i']+['%s']*2+['%f']*4
         #write data
         data = np.zeros(molecules.size, dtype=columns_dtype)
+        data['peak'] = peaks
         data['molecule'] = molecules
         data['transition'] = transitions
         data['frequency'] = frequencies
-        data['peak_frequency'] = peak_frequency
-        data['peak_velocity'] = peak_velocity
-        data['peak_flux'] = peak_flux
+        data['peak_frequency'] = peak_frequencies
+        data['peak_velocity'] = peak_velocities
+        data['peak_flux'] = peak_fluxes
         np.savetxt('detected_lines.txt', data, header=header, fmt=fmt)
        
     #this is just for reference while I code        
@@ -91,12 +97,12 @@ class Spectrum:
         ax.annotate(f'rms = {self.rms:.2f}',(x_lims[0],self.rms+self.rms/10),xycoords='data')
         #plot the potential lines
         y_lims = ax.get_ylim()
-        for l, freq_peak in zip(lines, frequency_peaks):
-            if l[0] == 'U':
-                ax.vlines(freq_peak, y_lims[0], y_lims[1] ,'r')
-                ax.annotate(' '.join([l[0],l[1]]),(freq_peak, 0.9),xycoords=('data','axes fraction'))   
+        for l in lines:
+            if l[1] == 'U':
+                ax.vlines(frequency_peaks[l[0]], y_lims[0], y_lims[1] ,'r')
+                ax.annotate(' '.join([l[1],l[2]]),(frequency_peaks[l[0]], 0.9),xycoords=('data','axes fraction'))   
             else:
-                ax.vlines(l[2], y_lims[0], y_lims[1] ,'r')
-                ax.annotate(' '.join([l[0],l[1]]),(l[2],0.9),xycoords=('data','axes fraction'))
+                ax.vlines(l[3], y_lims[0], y_lims[1] ,'r')
+                ax.annotate(' '.join([l[1],l[2]]),(l[3],0.9),xycoords=('data','axes fraction'))
         ax.legend()
         fig.savefig(log_file[:-4]+'.png',bbox_inches='tight')
