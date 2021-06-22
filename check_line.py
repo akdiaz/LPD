@@ -105,4 +105,7 @@ class Spectrum:
                 ax.vlines(l[3], y_lims[0], y_lims[1] ,'b')
                 ax.annotate(' '.join([l[1],l[2]]),(l[3],0.9),xycoords=('data','axes fraction'))
         ax.legend()
+        #add exis labels
+        ax.set_xlabel(self.columns[0])
+        ax.set_ylabel(self.columns[-1])
         fig.savefig(log_file[:-4]+'.png',bbox_inches='tight')
