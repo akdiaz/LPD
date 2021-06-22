@@ -99,10 +99,10 @@ class Spectrum:
         y_lims = ax.get_ylim()
         for l in lines:
             if l[1] == 'U':
-                ax.vlines(frequency_peaks[l[0]], y_lims[0], y_lims[1] ,'r')
-                ax.annotate(' '.join([l[1],l[2]]),(frequency_peaks[l[0]], 0.9),xycoords=('data','axes fraction'))   
+                ax.vlines(frequency_peaks[l[0]], y_lims[0], y_lims[1] ,colors='r', linestyles='dashed')
+                ax.annotate(l[1],(frequency_peaks[l[0]], flux_peaks[l[0]]),xycoords=('data'))   
             else:
-                ax.vlines(l[3], y_lims[0], y_lims[1] ,'r')
+                ax.vlines(l[3], y_lims[0], y_lims[1] ,'b')
                 ax.annotate(' '.join([l[1],l[2]]),(l[3],0.9),xycoords=('data','axes fraction'))
         ax.legend()
         fig.savefig(log_file[:-4]+'.png',bbox_inches='tight')
