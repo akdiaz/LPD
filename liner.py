@@ -39,13 +39,18 @@ parser.add_argument(
     help="Name of the file (including extension) with the known lines.",
     default="lines.txt",
 )
+parser.add_argument(
+    "--vlsr",
+    type=float,
+    help="Source radial velocity (local standard of rest) in km/s.",
+    default=0,
+)
 
 if __name__ == "__main__":
     args = parser.parse_args()
 
-    # need to couple name of spectrum in both scripts?
     spectrum = check_line.Spectrum(args.spectrum_file_name)
-    lines = spectrum.potential_lines(args.known_lines_file_name)
+    lines = spectrum.potential_lines(args.known_lines_file_name, args.vlsr)
     peak_frequencies, peak_velocities, peak_fluxes = spectrum.find_lines(
         args.snr, args.line_width
     )
