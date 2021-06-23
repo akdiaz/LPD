@@ -11,6 +11,7 @@ def gaussian(x, a, x0, sigma):
     y = a * np.exp(-((x - x0) ** 2) / (2 * sigma ** 2))
     return y
 
+
 def redshift_frequency(f, vlsr):
     """Assumes (for now) rest frequency (f) in MHz and velocity of the source (vlsr) in km/s."""
     f_rest = f * u.MHz  # rest frequency
@@ -18,6 +19,7 @@ def redshift_frequency(f, vlsr):
     relativistic_equiv = u.doppler_relativistic(f_rest)
     f_shifted = vlsr.to(u.MHz, equivalencies=relativistic_equiv)
     return f_shifted.value
+
 
 def match_lines(potential_lines, detected_lines_frequency, tolerance):
     potential_frequency = np.array([pot_line[3] for pot_line in potential_lines])
@@ -31,7 +33,8 @@ def match_lines(potential_lines, detected_lines_frequency, tolerance):
                 if dist < tolerance:
                     actual_lines.append([index] + potential_lines[index_dist])
     return actual_lines
-    
+
+
 class Spectrum:
     """This is a spectrum class. Initialises with a text file."""
 
@@ -62,7 +65,14 @@ class Spectrum:
         potential_lines = []
         for index, frequency in enumerate(redshifted_frequencies):
             if minimum <= frequency <= maximum:
-                potential_lines.append([species[index], transitions[index], transition_frequencies[index], frequency])
+                potential_lines.append(
+                    [
+                        species[index],
+                        transitions[index],
+                        transition_frequencies[index],
+                        frequency,
+                    ]
+                )
         if len(potential_lines) == 0:
             exit(
                 "There is no potential lines in the frequency range of the spectrum. Edit the file <<lines.txt>>."
