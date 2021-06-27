@@ -123,8 +123,8 @@ class Spectrum:
         )
 
     def write_parameters(
-        self, actual_lines, peak_frequency, peak_velocity, peak_flux, output
-            , log_file):
+        self, actual_lines, peak_frequency, peak_velocity, peak_flux, output, log_file
+    ):
         print("Writing output file...")
         output_file = output + "/detected_lines.txt"
         header = (
@@ -132,7 +132,7 @@ class Spectrum:
             + f"Peak_{self.columns[0]}\tPeak_{self.columns[1]}\tPeak_{self.columns[2]}"
         )
         peaks = np.array([i[0] for i in actual_lines])
-        name_peaks = np.array([log_file[:-4]+"_"+str(p) for p in peaks])
+        name_peaks = np.array([log_file[:-4] + "_" + str(p) for p in peaks])
         molecules = np.array([i[1] for i in actual_lines])
         transitions = np.array([i[2] for i in actual_lines])
         frequencies = np.array([i[3] for i in actual_lines])
@@ -166,7 +166,7 @@ class Spectrum:
             with open(output_file, "a") as f:
                 np.savetxt(f, data, fmt=fmt)
         else:
-            np.savetxt(output_file, data, header=header, fmt=fmt) 
+            np.savetxt(output_file, data, header=header, fmt=fmt)
 
     # this is just for reference while I code
     def make_plot(self, log_file, lines, frequency_peaks, flux_peaks, output):

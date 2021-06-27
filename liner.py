@@ -28,7 +28,7 @@ parser.add_argument(
     "-s",
     "--spectrum_file_name",
     type=str,
-    nargs='+',
+    nargs="+",
     help="Name of the file (including extension) with the spectrum to analyse.",
     default="spectrum_golden.txt",
 )
@@ -63,14 +63,19 @@ if __name__ == "__main__":
         spectrum = check_line.Spectrum(file_name)
         lines = spectrum.potential_lines(args.known_lines_file_name, args.vlsr)
         peak_frequencies, peak_velocities, peak_fluxes = spectrum.find_lines(
-        args.snr, args.line_width
+            args.snr, args.line_width
         )
         actual_lines = check_line.match_lines(
-        lines, peak_frequencies, args.frequency_tolerance
+            lines, peak_frequencies, args.frequency_tolerance
         )
         spectrum.write_parameters(
-        actual_lines, peak_frequencies, peak_velocities, peak_fluxes, output, file_name
+            actual_lines,
+            peak_frequencies,
+            peak_velocities,
+            peak_fluxes,
+            output,
+            file_name,
         )
         spectrum.make_plot(
-        file_name, actual_lines, peak_frequencies, peak_fluxes, output
+            file_name, actual_lines, peak_frequencies, peak_fluxes, output
         )
