@@ -10,9 +10,9 @@ VLRS = float(vlrs)  # km/s
 FREQUENCY_WINDOW = 100  # MHz
 FREQUENCY_RESOLUTION = 0.1
 # gaussian line parameters
-GAUSS_PEAK = [10]
-GAUSS_CENTER = [330587.8671]  # in MHz
-GAUSS_SIGMA = [2.5]
+GAUSS_PEAK = [10, 5]
+GAUSS_CENTER = [330587.8671, 330637.8671]  # in MHz
+GAUSS_SIGMA = [2.5, 2.5]
 
 
 def gaussian(x, a, x0, sigma):
