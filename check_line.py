@@ -6,6 +6,7 @@ from sys import exit
 from functools import lru_cache
 import astropy.units as u
 import os
+import shutil
 
 
 def gaussian(x, a, x0, sigma):
@@ -43,13 +44,15 @@ def output_folder(output):
         print(
             f"Folder {output} exists, the result files will be overwritten. Continue with new output folder? [y] or [n]"
         )
-        proceed = input(">>>")
+        proceed = input(">>> ")
         if proceed == "y":
             print("Type new output folder name")
-            new_output = input(">>>")
+            new_output = input(">>> ")
             os.makedirs(new_output)
         else:
+            shutil.rmtree(output)
             new_output = output
+            os.makedirs(new_output)
     else:
         new_output = output
         os.makedirs(new_output)
