@@ -5,7 +5,7 @@ from scipy.optimize import curve_fit
 from sys import exit
 from functools import lru_cache
 import astropy.units as u
-import os 
+import os
 
 
 def gaussian(x, a, x0, sigma):
@@ -35,23 +35,25 @@ def match_lines(potential_lines, detected_lines_frequency, tolerance):
                     actual_lines.append([index] + potential_lines[index_dist])
     return actual_lines
 
+
 def output_folder(output):
     print("Creating output folder...")
     isdir = os.path.isdir(output)
     if isdir:
-        print(f"Folder {output} exists, the result files will be overwritten. Continue with new output folder? [y] or [n]"
-)
-        proceed = input('>>>')
-        if proceed == 'y':
+        print(
+            f"Folder {output} exists, the result files will be overwritten. Continue with new output folder? [y] or [n]"
+        )
+        proceed = input(">>>")
+        if proceed == "y":
             print("Type new output folder name")
-            new_output = input('>>>')
+            new_output = input(">>>")
             os.makedirs(new_output)
         else:
             new_output = output
-    else:        
-        new_output = output 
-        os.makedirs(new_output)    
-    return(new_output)
+    else:
+        new_output = output
+        os.makedirs(new_output)
+    return new_output
 
 
 class Spectrum:
@@ -117,7 +119,9 @@ class Spectrum:
             self.flux[position_peaks],
         )
 
-    def write_parameters(self, actual_lines, peak_frequency, peak_velocity, peak_flux, output):
+    def write_parameters(
+        self, actual_lines, peak_frequency, peak_velocity, peak_flux, output
+    ):
         print("Writing output file...")
         header = (
             "Peak\tSpecies\tTransition\tTeorical_Frequency\tRedshifted_Frequency\t"
@@ -153,7 +157,7 @@ class Spectrum:
         data["peak_frequency"] = peak_frequencies
         data["peak_velocity"] = peak_velocities
         data["peak_flux"] = peak_fluxes
-        np.savetxt(output+"/detected_lines.txt", data, header=header, fmt=fmt)
+        np.savetxt(output + "/detected_lines.txt", data, header=header, fmt=fmt)
 
     # this is just for reference while I code
     def make_plot(self, log_file, lines, frequency_peaks, flux_peaks, output):
