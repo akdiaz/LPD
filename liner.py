@@ -40,6 +40,13 @@ parser.add_argument(
     default="lines.txt",
 )
 parser.add_argument(
+    "-o",
+    "--output",
+    type=str,
+    help="Name of the output folder.",
+    default='output',
+)
+parser.add_argument(
     "--vlsr",
     type=float,
     help="Source radial velocity (local standard of rest) in km/s.",
