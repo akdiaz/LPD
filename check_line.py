@@ -124,13 +124,15 @@ class Spectrum:
 
     def write_parameters(
         self, actual_lines, peak_frequency, peak_velocity, peak_flux, output
-    ):
+            , log_file):
         print("Writing output file...")
+        output_file = output + "/detected_lines.txt"
         header = (
-            "Peak\tSpecies\tTransition\tTeorical_Frequency\tRedshifted_Frequency\t"
+            "Spectrum_Peak_ID\tSpecies\tTransition\tTeorical_Frequency\tRedshifted_Frequency\t"
             + f"Peak_{self.columns[0]}\tPeak_{self.columns[1]}\tPeak_{self.columns[2]}"
         )
         peaks = np.array([i[0] for i in actual_lines])
+        name_peaks = np.array([log_file[:-4]+"_"+str(p) for p in peaks])
         molecules = np.array([i[1] for i in actual_lines])
         transitions = np.array([i[2] for i in actual_lines])
         frequencies = np.array([i[3] for i in actual_lines])
@@ -140,7 +142,7 @@ class Spectrum:
         peak_fluxes = [peak_flux[p] for p in peaks]
         # format of columns in data
         columns_dtype = [
-            ("peak", "int32"),
+            ("name_peak", "U25"),
             ("molecule", "U25"),
             ("transition", "U25"),
             ("frequency", float),
@@ -149,10 +151,10 @@ class Spectrum:
             ("peak_velocity", float),
             ("peak_flux", float),
         ]
-        fmt = ["%i"] + ["%s"] * 2 + ["%f"] * 5
+        fmt = ["%s"] * 3 + ["%f"] * 5
         # write data
         data = np.zeros(molecules.size, dtype=columns_dtype)
-        data["peak"] = peaks
+        data["name_peak"] = name_peaks
         data["molecule"] = molecules
         data["transition"] = transitions
         data["frequency"] = frequencies
@@ -160,7 +162,11 @@ class Spectrum:
         data["peak_frequency"] = peak_frequencies
         data["peak_velocity"] = peak_velocities
         data["peak_flux"] = peak_fluxes
-        np.savetxt(output + "/detected_lines.txt", data, header=header, fmt=fmt)
+        if os.path.isfile(output_file):
+            with open(output_file, "a") as f:
+                np.savetxt(f, data, fmt=fmt)
+        else:
+            np.savetxt(output_file, data, header=header, fmt=fmt) 
 
     # this is just for reference while I code
     def make_plot(self, log_file, lines, frequency_peaks, flux_peaks, output):
