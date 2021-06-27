@@ -64,9 +64,12 @@ if __name__ == "__main__":
     actual_lines = check_line.match_lines(
         lines, peak_frequencies, args.frequency_tolerance
     )
+    output = check_line.output_folder(
+        args.output
+    )
     spectrum.write_parameters(
-        actual_lines, peak_frequencies, peak_velocities, peak_fluxes
+        actual_lines, peak_frequencies, peak_velocities, peak_fluxes, output
     )
     spectrum.make_plot(
-        args.spectrum_file_name, actual_lines, peak_frequencies, peak_fluxes
-    )
+        args.spectrum_file_name, actual_lines, peak_frequencies, peak_fluxes, output
+)
