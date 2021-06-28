@@ -1,6 +1,11 @@
 # to be run inside CASA 6.1
 from casatasks import *
 
+def is_mask_all_zero(mask):
+        mask_statistics = imstat(
+            imagename = mask)
+        maximum_value = mask_statistics['max'][0]
+        return maximum_value == 0
 
 class ImageCube:
     """A CASA image with RA, DEC, and frequency axis, with its associated mask."""
@@ -15,13 +20,18 @@ class ImageCube:
         importfits(fitsimage=mask_name + ".fits", imagename=self.mask, overwrite=True)
         # these images should be deleted later
 
-    def get_spectrum(self, end_name):
-        log_file = "spectrum_{}.txt".format(end_name)
-        print(">>> Taking spectrum and writing to disk...")
-        specflux(
-            imagename=self.image,
-            mask=self.mask,
-            unit="MHz",
-            logfile=log_file,
-            overwrite=True,
-        )
+    def get_spectrum(self):
+        log_file = f"{self.name}.spectrum.txt"
+        print("\t>>> Taking spectrum and writing to disk...")
+        if not is_mask_all_zero(self.mask):
+            specflux(
+                imagename=self.image,
+                mask=self.mask,
+                unit="MHz",
+                logfile=log_file,
+                overwrite=True
+            )
+        else:
+            print('\t>>> This mask is all zeros. Moving on...')
+
+    
