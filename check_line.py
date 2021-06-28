@@ -142,7 +142,7 @@ class Spectrum:
         peak_fluxes = [peak_flux[p] for p in peaks]
         # format of columns in data
         columns_dtype = [
-            ("name_peak", "U25"),
+            ("name_peak", "U100"),
             ("molecule", "U25"),
             ("transition", "U25"),
             ("frequency", float),
