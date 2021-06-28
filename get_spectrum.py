@@ -10,14 +10,14 @@ def is_mask_all_zero(mask):
 class ImageCube:
     """A CASA image with RA, DEC, and frequency axis, with its associated mask."""
 
-    def __init__(self, image_name, mask_name, end_name):
-        # check that mask image is not just 0s
-        self.image = "cube_" + end_name + ".image"
-        self.mask = "cube_" + end_name + ".mask"
-        print(">>> Importing cube...")
-        importfits(fitsimage=image_name + ".fits", imagename=self.image, overwrite=True)
-        print(">>> Importing mask...")
-        importfits(fitsimage=mask_name + ".fits", imagename=self.mask, overwrite=True)
+    def __init__(self, base_name):
+        self.name = base_name.replace('.', '_').replace('-','_') #because I cannot use masks with several '.' or '-' in the name
+        self.image = self.name + ".image"
+        self.mask =  self.name + ".mask"
+        print("\t>>> Importing cube...")
+        importfits(fitsimage = base_name + ".image.pbcor.fits", imagename=self.image, overwrite=True)
+        print("\t>>> Importing mask...")
+        importfits(fitsimage = base_name + ".mask.fits", imagename=self.mask, overwrite=True)
         # these images should be deleted later
 
     def get_spectrum(self):
