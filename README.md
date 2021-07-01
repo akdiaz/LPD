@@ -37,7 +37,7 @@ and two plots like this (spw_0.png and spw_3.png):
 
 ![spw_3](https://github.com/akdiaz/LPD/blob/main/Help/spw3.png "spw_3")
 
-In this case, Liner found one line (spw0_0) that could be any of the 13COv=0 listed in the file, and another one (spw3_0) that could be COv=0 3-2.
+In this case, Liner found one line (spw0_0) that could be any of the 13COv=0 listed in the file, and another one (spw3_0) that could be COv=0 3-2, whose peaks are marked in the plot as red dots, and the frequency of the posible lines are marked with blue lines.
 
 There are several options you can set to control the behavior of Liner. You can view a list of them with
 
