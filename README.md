@@ -33,6 +33,9 @@ spw3_0 COv=0 3-2 345795.989900 345795.989900 345795.840051 0.130000 53.377550
 ```
 and two plots like this (spw_0.png and spw_3.png):
 
+![spw_0](https://github.com/akdiaz/LPD/blob/main/Help/spw0.png "spw_0")
+
+![spw_3](https://github.com/akdiaz/LPD/blob/main/Help/spw3.png "spw_3")
 
 In this case, Liner found one line (spw0_0) that could be any of the 13COv=0 listed in the file, and another one (spw3_0) that could be COv=0 3-2.
 
