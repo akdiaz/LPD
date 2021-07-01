@@ -9,5 +9,5 @@ __pycache__/
 *.pyc
 *.pre
 *.txt
-*.png
+output/
 test.py
