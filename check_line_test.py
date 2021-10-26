@@ -1,3 +1,6 @@
+# to be run:
+# python3 check_line_test.py 
+
 import unittest
 import sys, os
 
