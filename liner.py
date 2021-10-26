@@ -31,7 +31,7 @@ parser.add_argument(
     type=str,
     nargs="+",
     help="Name of the file (including extension) with the spectrum to analyse.",
-    default="spectrum_golden.txt",
+    default=["golden.spectrum.txt"],
 )
 parser.add_argument(
     "-l",
