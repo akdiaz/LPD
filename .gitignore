@@ -11,4 +11,4 @@ __pycache__/
 *.txt
 output/
 test.py
-#*
+golden_spectrum_synth*
