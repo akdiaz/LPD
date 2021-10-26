@@ -3,14 +3,14 @@ import argparse
 
 parser = argparse.ArgumentParser(
     description="LineR: Line Recognizer. Searches for lines in a spectrum and assignes IDs by comparing their frequencies with those of known lines. Returns a file text with the ID and the peak values (frequency, velocity, flux) of the detected lines.",
-    formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
 parser.add_argument(
     "-t",
     "--frequency_tolerance",
     type=float,
     help="Frequency tolerance (in the frequency units of the input spectrum). If a detected line has a known line with a frequency separation less than <<frequency_tolerance>>, it will assume its ID, if not, will remain unidentified (U).",
-    default=2
+    default=2,
 )
 parser.add_argument(
     "-w",
