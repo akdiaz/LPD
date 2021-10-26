@@ -1,3 +1,6 @@
+# to be run inside CASA 6.1:
+# execfile('get_spectrum_test.py') 
+
 import unittest
 import sys, os
 
@@ -49,6 +52,5 @@ class SpectrumTest(unittest.TestCase):
         )
         self.assertListEqual(list(frequency), list(frequency_golden))
         self.assertListEqual(list(flux), list(flux_golden))
-
 
 unittest.main(exit=False, verbosity=2)
