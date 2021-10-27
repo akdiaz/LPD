@@ -1,4 +1,6 @@
 # to be run inside CASA 6.1
+# execfile('get_spectrum_CASA.py')
+
 import sys, os
 import argparse
 import glob
