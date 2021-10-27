@@ -33,7 +33,7 @@ if image_name == []:
          )
 else:
     for cube_name in image_name:
-        base_name = cube_name[:-17]
+        base_name = cube_name[:-11]
         mask_name = base_name + ".mask.fits"
         spectrum_name = base_name + ".spectrum.txt"
         print(f"For {base_name}...")
