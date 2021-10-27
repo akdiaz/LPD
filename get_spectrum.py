@@ -19,7 +19,7 @@ class ImageCube:
         self.mask = self.name + ".mask"
         print("\t>>> Importing cube...")
         importfits(
-            fitsimage=base_name + ".image.pbcor.fits",
+            fitsimage=base_name + ".pbcor.fits",
             imagename=self.image,
             overwrite=True,
         )
