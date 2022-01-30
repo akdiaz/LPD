@@ -82,6 +82,91 @@ def output_folder(output):
     return new_output
 
 
+class Image:
+    """This is an image class. Initialises with a fits image and a mask."""
+
+    def __init__(self, fits_image, mask):
+        self.mask = mask
+        self.name = fits_image
+
+    def get_spectrum(self):
+        # number of unmasked pixels
+        region_pix = int(np.sum(self.mask))
+        if region_pix == 0:
+            print("\t>>> This mask is all zeros. Moving on...")
+            return
+        # import image
+        print("\t>>> Importing fits image...")
+        hdul = fits.open(self.name)
+        data_image = hdul[0].data[0]
+        # get info from header
+        beam_maj = hdul[0].header["BMAJ"]
+        beam_min = hdul[0].header["BMIN"]
+        beam_units = hdul[0].header["BUNIT"]
+        delta_ra = hdul[0].header["CDELT1"]
+        delta_dec = hdul[0].header["CDELT2"]
+        delta_freq = hdul[0].header["CDELT3"]
+        initial_freq = hdul[0].header["CRVAL3"]
+        freq_units = hdul[0].header["CUNIT3"]
+        channels = hdul[0].header["NAXIS3"]
+        rest_freq = hdul[0].header["RESTFRQ"]
+        hdul.close()
+        # calculate beam
+        beam_area = (
+            np.pi / (4 * np.log(2)) * beam_maj * beam_min * 3600 ** 2
+        )  # arcsec^2
+        pix_area = abs(delta_ra * delta_dec) * 3600 ** 2  # arcsec^2
+        beam_pix = beam_area / pix_area  # pixels
+        # calculate sum inside mask
+        print("\t>>> Taking spectrum...")
+        spectrum = []
+        for channel in data_image:
+            intensity = np.nansum(channel * self.mask)
+            spectrum.append(intensity)
+        # generate freq column
+        freq = (
+            np.arange(initial_freq, initial_freq + channels * delta_freq, delta_freq)
+            * 10 ** -6
+            * u.MHz
+        )
+        # generate velocity column
+        radio_equiv = u.doppler_radio(rest_freq * 10 ** -6 * u.MHz)
+        velocity = freq.to(u.km / u.s, equivalencies=radio_equiv)
+        # generate channel column
+        chan = np.arange(channels)
+        # generate pixels column
+        pix = np.full(channels, region_pix)
+        return chan, pix, freq.value, velocity.value, spectrum, beam_area, beam_pix
+
+    def write_spectrum(self, chan, pix, freq, velocity, spectrum, beam_area, beam_pix):
+        # spectrum_file
+        output_file = self.name[:-4] + "spectrum.txt"
+        # generate header
+        header = f"{self.name}, region=\n\
+beam size: {beam_area} arcsec2, {beam_pix} pixels\n\
+Total flux: \n\
+Channel number_of_unmasked_pixels Frequency_(MHz) Velocity_(km/s) Sum_(Jy/beam)"
+        # format of columns in spectrum_file
+        columns_dtype = [
+            ("channel", int),
+            ("pixels", int),
+            ("frequency", float),
+            ("velocity", float),
+            ("sum", float),
+        ]
+        fmt = ["%i"] * 2 + ["%f"] * 3
+        # write data in spectrum_file
+        data = np.zeros(freq.size, dtype=columns_dtype)
+        data["channel"] = chan
+        data["pixels"] = pix
+        data["frequency"] = freq
+        data["velocity"] = velocity
+        data["sum"] = spectrum
+        # write spectrum_file
+        print("\t>>> Writing spectrum to file...")
+        np.savetxt(output_file, data, header=header, fmt=fmt)
+
+
 class Spectrum:
     """This is a spectrum class. Initialises with a text file."""
 
