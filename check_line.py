@@ -52,6 +52,14 @@ def match_lines(potential_lines, detected_lines_frequency, tolerance):
     return actual_lines
 
 
+def spectrum_exist():
+    spectrum_files = glob.glob("*spectrum.txt")
+    if spectrum_files == []:
+        return False
+    else:
+        return spectrum_files
+
+
 def output_folder(output):
     print("Creating output folder...")
     isdir = os.path.isdir(output)
