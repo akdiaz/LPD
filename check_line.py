@@ -208,4 +208,4 @@ class Spectrum:
         # add exis labels
         ax.set_xlabel(self.columns[0])
         ax.set_ylabel(self.columns[-1])
-        fig.savefig(output + "/" + log_file[:-4] + ".png", bbox_inches="tight")
+        fig.savefig(output + "/" + log_file.split('/')[-1][:-4] + ".png", bbox_inches="tight")
