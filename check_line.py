@@ -7,11 +7,26 @@ from functools import lru_cache
 import astropy.units as u
 import os
 import shutil
+from astropy.io import fits
+import glob
 
 
 def gaussian(x, a, x0, sigma):
     y = a * np.exp(-((x - x0) ** 2) / (2 * sigma ** 2))
     return y
+
+
+def make_union_mask(fits_mask):
+    # import mask
+    print("\t>>> Importing mask image...")
+    hdul = fits.open(fits_mask)
+    data = hdul[0].data[0]
+    hdul.close()
+    # union of masks in all channels
+    print("\t>>> Making proper mask...")
+    mask = np.sum(data, axis=0)
+    mask[mask != 0] = 1
+    return mask
 
 
 def redshift_frequency(f, vlsr):
