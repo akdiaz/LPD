@@ -125,7 +125,7 @@ class Image:
             spectrum.append(intensity)
         # generate freq column
         freq = (
-            np.arange(initial_freq, initial_freq + channels * delta_freq, delta_freq)
+            np.arange(initial_freq, initial_freq + channels * delta_freq, delta_freq)[:channels]
             * 10 ** -6
             * u.MHz
         )
