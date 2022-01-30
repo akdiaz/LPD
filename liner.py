@@ -6,6 +6,22 @@ parser = argparse.ArgumentParser(
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
 parser.add_argument(
+    "-i",
+    "--fits_image",
+    type=str,
+    nargs="+",
+    help="Fits image to take spectrum on mask <<mask>>.",
+    default=[''],
+)
+parser.add_argument(
+    "-m",
+    "--fits_mask",
+    type=str,
+    nargs="+",
+    help="Mask used to take spectrum in image <<fits_image>>.",
+    default=[''],
+)
+parser.add_argument(
     "-t",
     "--frequency_tolerance",
     type=float,
@@ -31,7 +47,7 @@ parser.add_argument(
     type=str,
     nargs="+",
     help="Name of the file (including extension) with the spectrum to analyse.",
-    default=["golden.spectrum.txt"],
+    default=[""],
 )
 parser.add_argument(
     "-l",
@@ -59,24 +75,44 @@ if __name__ == "__main__":
 
     output = check_line.output_folder(args.output)
 
-    for file_name in args.spectrum_file_name:
-        print(f"For spectrum {file_name}:")
-        spectrum = check_line.Spectrum(file_name)
-        lines = spectrum.potential_lines(args.known_lines_file_name, args.vlsr)
-        peak_frequencies, peak_velocities, peak_fluxes = spectrum.find_lines(
-            args.snr, args.line_width
-        )
-        actual_lines = check_line.match_lines(
-            lines, peak_frequencies, args.frequency_tolerance
-        )
-        spectrum.write_parameters(
-            actual_lines,
-            peak_frequencies,
-            peak_velocities,
-            peak_fluxes,
-            output,
-            file_name,
-        )
-        spectrum.make_plot(
-            file_name, actual_lines, peak_frequencies, peak_fluxes, output
-        )
+    
+
+    for image_name, mask_name in zip(args.fits_image,args.fits_mask):
+        if image_name != '':
+            print(f"For image {image_name} and mask {mask_name}:")
+            if mask_name != '':
+                mask = check_line.make_union_mask(mask_name)
+                image = check_line.Image(image_name, mask)
+                chan, pix, freq, velocity, spectrum, beam_area, beam_pix = image.get_spectrum()
+                image.write_spectrum(chan, pix, freq, velocity, spectrum, beam_area, beam_pix)
+            else:
+                print('You need to provide a fits for the mask.')
+
+    
+    if args.spectrum_file_name == ['']:
+        spectrum_file_names = check_line.spectrum_exist()
+    else:
+        spectrum_file_names = args.spectrum_file_name
+    
+    if spectrum_file_names:
+        for file_name in spectrum_file_names:
+            print(f"For spectrum {file_name}:")
+            spectrum = check_line.Spectrum(file_name)
+            lines = spectrum.potential_lines(args.known_lines_file_name, args.vlsr)
+            peak_frequencies, peak_velocities, peak_fluxes = spectrum.find_lines(
+                args.snr, args.line_width
+            )
+            actual_lines = check_line.match_lines(
+                lines, peak_frequencies, args.frequency_tolerance
+            )
+            spectrum.write_parameters(
+                actual_lines,
+                peak_frequencies,
+                peak_velocities,
+                peak_fluxes,
+                output,
+                file_name,
+            )
+            spectrum.make_plot(
+                file_name, actual_lines, peak_frequencies, peak_fluxes, output
+            )
