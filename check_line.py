@@ -18,8 +18,8 @@ def redshift_frequency(f, vlsr):
     """Assumes (for now) rest frequency (f) in MHz and velocity of the source (vlsr) in km/s."""
     f_rest = f * u.MHz  # rest frequency
     vlsr = vlsr * u.km / u.s  # velocity of the source
-    relativistic_equiv = u.doppler_relativistic(f_rest)
-    f_shifted = vlsr.to(u.MHz, equivalencies=relativistic_equiv)
+    radio_equiv = u.doppler_radio(f_rest)
+    f_shifted = vlsr.to(u.MHz, equivalencies=radio_equiv)
     return f_shifted.value
 
 
