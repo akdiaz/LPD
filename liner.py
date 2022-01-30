@@ -11,7 +11,7 @@ parser.add_argument(
     type=str,
     nargs="+",
     help="Fits image to take spectrum on mask <<mask>>.",
-    default=[''],
+    default=[""],
 )
 parser.add_argument(
     "-m",
@@ -19,7 +19,7 @@ parser.add_argument(
     type=str,
     nargs="+",
     help="Mask used to take spectrum in image <<fits_image>>.",
-    default=[''],
+    default=[""],
 )
 parser.add_argument(
     "-t",
@@ -75,25 +75,32 @@ if __name__ == "__main__":
 
     output = check_line.output_folder(args.output)
 
-    
-
-    for image_name, mask_name in zip(args.fits_image,args.fits_mask):
-        if image_name != '':
+    for image_name, mask_name in zip(args.fits_image, args.fits_mask):
+        if image_name != "":
             print(f"For image {image_name} and mask {mask_name}:")
-            if mask_name != '':
+            if mask_name != "":
                 mask = check_line.make_union_mask(mask_name)
                 image = check_line.Image(image_name, mask)
-                chan, pix, freq, velocity, spectrum, beam_area, beam_pix = image.get_spectrum()
-                image.write_spectrum(chan, pix, freq, velocity, spectrum, beam_area, beam_pix)
+                (
+                    chan,
+                    pix,
+                    freq,
+                    velocity,
+                    spectrum,
+                    beam_area,
+                    beam_pix,
+                ) = image.get_spectrum()
+                image.write_spectrum(
+                    chan, pix, freq, velocity, spectrum, beam_area, beam_pix
+                )
             else:
-                print('You need to provide a fits for the mask.')
+                print("You need to provide a fits for the mask.")
 
-    
-    if args.spectrum_file_name == ['']:
+    if args.spectrum_file_name == [""]:
         spectrum_file_names = check_line.spectrum_exist()
     else:
         spectrum_file_names = args.spectrum_file_name
-    
+
     if spectrum_file_names:
         for file_name in spectrum_file_names:
             print(f"For spectrum {file_name}:")
