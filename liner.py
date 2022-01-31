@@ -10,7 +10,7 @@ parser.add_argument(
     "--fits_image",
     type=str,
     nargs="+",
-    help="Fits image to take spectrum on mask <<mask>>.",
+    help="Fits image to take spectrum on mask <<fits_mask>>.",
     default=[""],
 )
 parser.add_argument(
@@ -46,7 +46,7 @@ parser.add_argument(
     "--spectrum_file_name",
     type=str,
     nargs="+",
-    help="Name of the file (including extension) with the spectrum to analyse.",
+    help="Name of the file (including extension) with the spectrum to analyse. If not set (default behaviour) will use all the files in the working directory end-named 'spectrum.txt'.",
     default=[""],
 )
 parser.add_argument(
