@@ -79,20 +79,21 @@ if __name__ == "__main__":
         if image_name != "":
             print(f"For image {image_name} and mask {mask_name}:")
             if mask_name != "":
-                mask = check_line.make_union_mask(mask_name)
-                image = check_line.Image(image_name, mask)
-                (
-                    chan,
-                    pix,
-                    freq,
-                    velocity,
-                    spectrum,
-                    beam_area,
-                    beam_pix,
-                ) = image.get_spectrum()
-                image.write_spectrum(
-                    chan, pix, freq, velocity, spectrum, beam_area, beam_pix
-                )
+                region_pix, mask = check_line.make_union_mask(mask_name)
+                if region_pix != False:
+                    image = check_line.Image(image_name, mask)
+                    (
+                        chan,
+                        pix,
+                        freq,
+                        velocity,
+                        spectrum,
+                        beam_area,
+                        beam_pix,
+                    ) = image.get_spectrum(region_pix)
+                    image.write_spectrum(
+                        chan, pix, freq, velocity, spectrum, beam_area, beam_pix
+                    )
             else:
                 print("You need to provide a fits for the mask.")
 
