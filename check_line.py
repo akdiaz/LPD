@@ -26,7 +26,12 @@ def make_union_mask(fits_mask):
     print("\t>>> Making joint mask...")
     mask = np.sum(data, axis=0)
     mask[mask != 0] = 1
-    return mask
+    # number of unmasked pixels
+    region_pix = int(np.sum(mask))
+    if region_pix == 0:
+           print("\t>>> This mask is all zeros. Moving on...")
+           return False, False
+    return region_pix, mask
 
 
 def redshift_frequency(f, vlsr):
@@ -89,12 +94,7 @@ class Image:
         self.mask = mask
         self.name = fits_image
 
-    def get_spectrum(self):
-        # number of unmasked pixels
-        region_pix = int(np.sum(self.mask))
-        if region_pix == 0:
-            print("\t>>> This mask is all zeros. Moving on...")
-            return
+    def get_spectrum(self, region_pix):
         # import image
         print("\t>>> Importing fits image...")
         hdul = fits.open(self.name)
