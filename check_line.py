@@ -23,7 +23,7 @@ def make_union_mask(fits_mask):
     data = hdul[0].data[0]
     hdul.close()
     # union of masks in all channels
-    print("\t>>> Making proper mask...")
+    print("\t>>> Making joint mask...")
     mask = np.sum(data, axis=0)
     mask[mask != 0] = 1
     return mask
