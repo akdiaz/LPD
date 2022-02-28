@@ -22,16 +22,16 @@ def make_union_mask(fits_mask):
     hdul = fits.open(fits_mask)
     data = hdul[0].data[0]
     hdul.close()
-    # union of masks in all channels
-    print("\t>>> Making joint mask...")
-    mask = np.sum(data, axis=0)
-    mask[mask != 0] = 1
-    # number of unmasked pixels
-    region_pix = int(np.sum(mask))
-    if region_pix == 0:
-           print("\t>>> This mask is all zeros. Moving on...")
-           return False, False
-    return region_pix, mask
+    if np.amax(data) != 0: 
+        # union of masks in all channels
+        print("\t>>> Making joint mask...")
+        mask = np.sum(data, axis=0)
+        mask[mask != 0] = 1
+        region_pix = int(np.sum(mask))
+        return region_pix, mask
+    else:
+        print("\t>>> This mask is all zeros. Moving on...")
+        return False, False         
 
 
 def redshift_frequency(f, vlsr):
