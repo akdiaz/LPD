@@ -2,7 +2,7 @@ import check_line
 import argparse
 
 parser = argparse.ArgumentParser(
-    description="LineR: Line Recognizer. Searches for lines in a spectrum and assignes IDs by comparing their frequencies with those of known lines. Returns a file text with the ID and the peak values (frequency, velocity, flux) of the detected lines.",
+    description="MEMOIR: Molecular EMissiOn IdentifieR. Searches for lines in a spectrum and assignes IDs by comparing their frequencies with those of known lines. Returns a file text with the ID and the peak values (frequency, velocity, intensity/flux) of the detected lines.",
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
 parser.add_argument(
