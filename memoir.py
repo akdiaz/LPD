@@ -54,7 +54,7 @@ parser.add_argument(
     "--known_lines_file_name",
     type=str,
     help="Name of the file (including extension) with the known lines.",
-    default="lines.txt",
+    default="allmols_combined_transitions.csv",
 )
 parser.add_argument(
     "-o",

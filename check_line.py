@@ -9,6 +9,7 @@ import os
 import shutil
 from astropy.io import fits
 import glob
+import pandas as pd
 
 
 def gaussian(x, a, x0, sigma):
@@ -187,10 +188,10 @@ class Spectrum:
 
     def potential_lines(self, list_file, vlsr):
         print("Finding expected lines in the spectrum...")
-        transition_frequencies = np.loadtxt(list_file, usecols=[1])
-        species, transitions = np.loadtxt(
-            list_file, usecols=(0, 2), dtype="str", unpack=True
-        )
+        data = pd.read_csv(list_file)
+        transition_frequencies = np.array(data.Freq)
+        species = np.array(data.Species)
+        transitions = np.array(data.QNs)
         minimum, *_, maximum = sorted(self.frequency)
         print("\t Redshifting teorical frequencies...")
         redshifted_frequencies = redshift_frequency(transition_frequencies, vlsr)
