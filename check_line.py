@@ -36,11 +36,11 @@ def make_union_mask(fits_mask):
 
 
 def redshift_frequency(f, vlsr):
-    """Assumes (for now) rest frequency (f) in MHz and velocity of the source (vlsr) in km/s."""
-    f_rest = f * u.MHz  # rest frequency
+    """Assumes (for now) rest frequency (f) in GHz and velocity of the source (vlsr) in km/s."""
+    f_rest = f * u.GHz  # rest frequency
     vlsr = vlsr * u.km / u.s  # velocity of the source
     radio_equiv = u.doppler_radio(f_rest)
-    f_shifted = vlsr.to(u.MHz, equivalencies=radio_equiv)
+    f_shifted = vlsr.to(u.GHz, equivalencies=radio_equiv)
     return f_shifted.value
 
 
@@ -127,11 +127,11 @@ class Image:
         # generate freq column
         freq = (
             np.arange(initial_freq, initial_freq + channels * delta_freq, delta_freq)[:channels]
-            * 10 ** -6
-            * u.MHz
+            * 10 ** -9
+            * u.GHz
         )
         # generate velocity column
-        radio_equiv = u.doppler_radio(rest_freq * 10 ** -6 * u.MHz)
+        radio_equiv = u.doppler_radio(rest_freq * 10 ** -9 * u.GHz)
         velocity = freq.to(u.km / u.s, equivalencies=radio_equiv)
         # generate channel column
         chan = np.arange(channels)
@@ -146,7 +146,7 @@ class Image:
         header = f"{self.name}, region=\n\
 beam size: {beam_area} arcsec2, {beam_pix} pixels\n\
 Total flux: \n\
-Channel number_of_unmasked_pixels Frequency_(MHz) Velocity_(km/s) Sum_(Jy/beam)"
+Channel number_of_unmasked_pixels Frequency_(GHz) Velocity_(km/s) Sum_(Jy/beam)"
         # format of columns in spectrum_file
         columns_dtype = [
             ("channel", int),
