@@ -12,3 +12,5 @@ __pycache__/
 output/
 test.py
 golden_spectrum_synth*
+.ipynb_checkpoints/
+*.ipynb
