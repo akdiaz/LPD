@@ -15,7 +15,7 @@ import pandas as pd
 
 
 def gaussian(x, a, x0, sigma):
-    y = a * np.exp(-((x - x0) ** 2) / (2 * sigma ** 2))
+    y = a * np.exp(-((x - x0) ** 2) / (2 * sigma**2))
     return y
 
 
@@ -25,7 +25,7 @@ def make_union_mask(fits_mask):
     hdul = fits.open(fits_mask)
     data = hdul[0].data[0]
     hdul.close()
-    if np.amax(data) != 0: 
+    if np.amax(data) != 0:
         # union of masks in all channels
         print("\t>>> Making joint mask...")
         mask = np.sum(data, axis=0)
@@ -34,7 +34,7 @@ def make_union_mask(fits_mask):
         return region_pix, mask
     else:
         print("\t>>> This mask is all zeros. Moving on...")
-        return False, False         
+        return False, False
 
 
 def redshift_frequency(f, vlsr):
@@ -116,9 +116,9 @@ class Image:
         hdul.close()
         # calculate beam
         beam_area = (
-            np.pi / (4 * np.log(2)) * beam_maj * beam_min * 3600 ** 2
+            np.pi / (4 * np.log(2)) * beam_maj * beam_min * 3600**2
         )  # arcsec^2
-        pix_area = abs(delta_ra * delta_dec) * 3600 ** 2  # arcsec^2
+        pix_area = abs(delta_ra * delta_dec) * 3600**2  # arcsec^2
         beam_pix = beam_area / pix_area  # pixels
         # calculate sum inside mask
         print("\t>>> Taking spectrum...")
@@ -128,12 +128,14 @@ class Image:
             spectrum.append(intensity)
         # generate freq column
         freq = (
-            np.arange(initial_freq, initial_freq + channels * delta_freq, delta_freq)[:channels]
-            * 10 ** -9
+            np.arange(initial_freq, initial_freq + channels * delta_freq, delta_freq)[
+                :channels
+            ]
+            * 10**-9
             * u.GHz
         )
         # generate velocity column
-        radio_equiv = u.doppler_radio(rest_freq * 10 ** -9 * u.GHz)
+        radio_equiv = u.doppler_radio(rest_freq * 10**-9 * u.GHz)
         velocity = freq.to(u.km / u.s, equivalencies=radio_equiv)
         # generate channel column
         chan = np.arange(channels)

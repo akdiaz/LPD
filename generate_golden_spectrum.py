@@ -16,7 +16,7 @@ GAUSS_SIGMA = [2.5, 2.5]
 
 
 def gaussian(x, a, x0, sigma):
-    y = a * np.exp(-((x - x0) ** 2) / (2 * sigma ** 2))
+    y = a * np.exp(-((x - x0) ** 2) / (2 * sigma**2))
     return y
 
 
