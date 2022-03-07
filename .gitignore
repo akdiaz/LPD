@@ -14,3 +14,7 @@ test.py
 golden_spectrum_synth*
 .ipynb_checkpoints/
 *.ipynb
+.tox/
+build/
+dist/
+*.egg-info/

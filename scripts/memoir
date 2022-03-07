@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
 
-import check_line
 import argparse
+import atexit
+import contextlib
+import os
+import os.path
+
+import importlib_resources
+import memoir.check_line
 
 parser = argparse.ArgumentParser(
     description="MEMOIR: Molecular EMissiOn IdentifieR. Searches for lines in a spectrum and assignes IDs by comparing their frequencies with those of known lines. Returns a file text with the ID and the peak values (frequency, velocity, intensity/flux) of the detected lines.",
@@ -51,12 +57,16 @@ parser.add_argument(
     help="Name of the file (including extension) with the spectrum to analyse. If not set (default behaviour) will use all the files in the working directory end-named 'spectrum.txt'.",
     default=[""],
 )
+
+# The default file used by --known_lines_file_name; included in the package.
+KNOWN_LINES_DEFAULT_FILE = "data/allmols_combined_transitions.csv"
+
 parser.add_argument(
     "-l",
     "--known_lines_file_name",
     type=str,
-    help="Name of the file (including extension) with the known lines.",
-    default="allmols_combined_transitions.csv",
+    help="Name of the file (including extension) with the known lines. If not specified, use memoir's built-in one.",
+    default=None,
 )
 parser.add_argument(
     "-o",
@@ -75,15 +85,15 @@ parser.add_argument(
 if __name__ == "__main__":
     args = parser.parse_args()
 
-    output = check_line.output_folder(args.output)
+    output = memoir.check_line.output_folder(args.output)
 
     for image_name, mask_name in zip(args.fits_image, args.fits_mask):
         if image_name != "":
             print(f"For image {image_name} and mask {mask_name}:")
             if mask_name != "":
-                region_pix, mask = check_line.make_union_mask(mask_name)
+                region_pix, mask = memoir.check_line.make_union_mask(mask_name)
                 if region_pix != False:
-                    image = check_line.Image(image_name, mask)
+                    image = memoir.check_line.Image(image_name, mask)
                     (
                         chan,
                         pix,
@@ -100,19 +110,30 @@ if __name__ == "__main__":
                 print("You need to provide a fits for the mask.")
 
     if args.spectrum_file_name == [""]:
-        spectrum_file_names = check_line.spectrum_exist()
+        spectrum_file_names = memoir.check_line.spectrum_exist()
     else:
         spectrum_file_names = args.spectrum_file_name
+
+    # Fall back to the built-in known lines file if the user didn't specify any.
+    # https://importlib-resources.readthedocs.io/en/latest/migration.html#pkg-resources-resource-filename.
+    if args.known_lines_file_name is None:
+        file_manager = contextlib.ExitStack()
+        atexit.register(file_manager.close)
+        ref = importlib_resources.files(memoir) / KNOWN_LINES_DEFAULT_FILE
+        known_lines_path = file_manager.enter_context(importlib_resources.as_file(ref))
+
+    else:
+        known_lines_path = args.known_lines_file_name
 
     if spectrum_file_names:
         for file_name in spectrum_file_names:
             print(f"For spectrum {file_name}:")
-            spectrum = check_line.Spectrum(file_name)
-            lines = spectrum.potential_lines(args.known_lines_file_name, args.vlsr)
+            spectrum = memoir.check_line.Spectrum(file_name)
+            lines = spectrum.potential_lines(known_lines_path, args.vlsr)
             peak_frequencies, peak_velocities, peak_fluxes = spectrum.find_lines(
                 args.snr, args.line_width
             )
-            actual_lines = check_line.match_lines(
+            actual_lines = memoir.check_line.match_lines(
                 lines, peak_frequencies, args.frequency_tolerance
             )
             spectrum.write_parameters(

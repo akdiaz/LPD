@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 
-import numpy as np
-import matplotlib.pyplot as plt
-import scipy.signal as sig
-from scipy.optimize import curve_fit
-from sys import exit
 from functools import lru_cache
-import astropy.units as u
+from sys import exit
+import glob
 import os
 import shutil
+
 from astropy.io import fits
-import glob
+from scipy.optimize import curve_fit
+import astropy.units as u
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+import scipy.signal as sig
 
 
 def gaussian(x, a, x0, sigma):
