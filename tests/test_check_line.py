@@ -1,11 +1,11 @@
 # to be run:
 # python3 check_line_test.py
 
+import os
+import sys
 import unittest
-import sys, os
 
-sys.path.append(os.getcwd())  # to be able to find check_line
-import check_line
+from memoir import check_line
 
 
 class LinesTest(unittest.TestCase):
@@ -14,7 +14,7 @@ class LinesTest(unittest.TestCase):
         frequency = 345795.98990  # MHz
         vlsr = 1.0  # km/s
         redshifted_frequency = check_line.redshift_frequency(frequency, vlsr)
-        self.assertEqual(redshifted_frequency, 345794.8364506588)
+        self.assertAlmostEqual(redshifted_frequency, 345794.8364506588, places=5)
 
     def test_match_lines(self):
         """Make sure that the lines are correctly matched"""
