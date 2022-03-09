@@ -50,40 +50,30 @@ There are several options you can set to control the behavior of `MEMOIR`. You c
 which produces
 
 ```
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -i FITS_IMAGE [FITS_IMAGE ...], --fits_image FITS_IMAGE [FITS_IMAGE ...]
-                        Fits image to take spectrum on mask <<fits_mask>>.
-                        (default: [''])
+                        Fits image to take spectrum on mask <<fits_mask>>. (default: [''])
   -m FITS_MASK [FITS_MASK ...], --fits_mask FITS_MASK [FITS_MASK ...]
-                        Mask used to take spectrum in image <<fits_image>>.
-                        (default: [''])
+                        Mask used to take spectrum in image <<fits_image>>. (default: [''])
   -t FREQUENCY_TOLERANCE, --frequency_tolerance FREQUENCY_TOLERANCE
-                        Frequency tolerance (in the frequency units of the
-                        input spectrum). If a detected line has a known line
-                        with a frequency separation less than
-                        <<frequency_tolerance>>, it will assume its ID, if
-                        not, will remain unidentified (U). (default: 0.01)
+                        Frequency tolerance (in the frequency units of the input spectrum). If a detected line has a known line with a
+                        frequency separation less than <<frequency_tolerance>>, it will assume its ID, if not, will remain unidentified
+                        (U). (default: 0.01)
   -w LINE_WIDTH, --line_width LINE_WIDTH
-                        Line width (in the velocity units of the input
-                        spectrum). Local peaks closer than <<line_width>> will
-                        be considered as belonging to the same line, and only
-                        the one with higher flux will be returned. (default:
-                        20)
-  --snr SNR             Signal-to-noise ratio. Only peaks with flux higher
-                        than <<SNR>> will be returned (default: 5)
+                        Line width (in the velocity units of the input spectrum). Local peaks closer than <<line_width>> will be
+                        considered as belonging to the same line, and only the one with higher flux will be returned. (default: 20)
+  --snr SNR             Signal-to-noise ratio. Only peaks with flux higher than <<SNR>> will be returned (default: 5)
   -s SPECTRUM_FILE_NAME [SPECTRUM_FILE_NAME ...], --spectrum_file_name SPECTRUM_FILE_NAME [SPECTRUM_FILE_NAME ...]
-                        Name of the file (including extension) with the
-                        spectrum to analyse. If not set (default behaviour)
-                        will use all the files in the working directory end-
-                        named 'spectrum.txt'. (default: [''])
+                        Name of the file (including extension) with the spectrum to analyse. If not set (default behaviour) will use
+                        all the files in the working directory end-named 'spectrum.txt'. (default: [''])
   -l KNOWN_LINES_FILE_NAME, --known_lines_file_name KNOWN_LINES_FILE_NAME
-                        Name of the file (including extension) with the known
-                        lines. (default: allmols_combined_transitions.csv)
+                        Name of the file (including extension) with the known lines. If not specified, use memoir's built-in one.
+                        (default: None)
   -o OUTPUT, --output OUTPUT
                         Name of the output folder. (default: output)
-  --vlsr VLSR           Source radial velocity (local standard of rest) in
-                        km/s. (default: 0)
+  --vlsr VLSR           Source radial velocity (local standard of rest) in km/s. (default: 0)
+  -v, --version         show program's version number and exit
 ```
 
 ## How it works:
