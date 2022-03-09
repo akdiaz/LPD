@@ -7,6 +7,7 @@ import os
 import os.path
 
 import importlib_resources
+import memoir
 import memoir.check_line
 
 parser = argparse.ArgumentParser(
@@ -80,6 +81,12 @@ parser.add_argument(
     type=float,
     help="Source radial velocity (local standard of rest) in km/s.",
     default=0,
+)
+parser.add_argument(
+    "-v",
+    "--version",
+    action="version",
+    version=memoir.__version__,
 )
 
 if __name__ == "__main__":
