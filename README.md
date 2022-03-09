@@ -36,9 +36,9 @@ spw3_0 COv=0 3-2 345795.989900 345795.989900 345795.840051 0.130000 53.377550
 ```
 and two plots like these (named "spw_0.png" and "spw_3.png"):
 
-![spw_0](./Help/spw0.png "spw_0")
+![spw_0](https://github.com/akdiaz/LPD/blob/main/Help/spw0.png "spw_0")
 
-![spw_3](./Help/spw3.png "spw_3")
+![spw_3](https://github.com/akdiaz/LPD/blob/main/Help/spw3.png "spw_3")
 
 In this case, `MEMOIR` found one line (spw0_0) that could be any of the 13COv=0 listed, and another one (spw3_0) identified as COv=0 3-2, whose peaks are marked in the plot as red dots, and the frequency of the posible lines are marked with blue lines.
 
