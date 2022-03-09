@@ -34,7 +34,7 @@ parser.add_argument(
     "--frequency_tolerance",
     type=float,
     help="Frequency tolerance (in the frequency units of the input spectrum). If a detected line has a known line with a frequency separation less than <<frequency_tolerance>>, it will assume its ID, if not, will remain unidentified (U).",
-    default=2,
+    default=0.01,
 )
 parser.add_argument(
     "-w",
