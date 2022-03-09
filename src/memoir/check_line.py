@@ -56,7 +56,7 @@ def match_lines(potential_lines, detected_lines_frequency, tolerance):
             actual_lines.append([index, "U", "U", "0", "0"])
         else:
             for index_dist, dist in enumerate(distances):
-                if dist <= tolerance:
+                if abs(dist) <= tolerance:
                     actual_lines.append([index] + potential_lines[index_dist])
     return actual_lines
 
