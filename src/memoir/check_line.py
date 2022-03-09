@@ -213,7 +213,7 @@ class Spectrum:
                 )
         if len(potential_lines) == 0:
             exit(
-                "There is no potential lines in the frequency range of the spectrum. Edit the file <<lines.txt>>."
+                "There are no expected lines in the frequency range of the spectrum."
             )
         return potential_lines
 
