@@ -168,3 +168,4 @@ CNv=0,Cyanide Radical,"N=2-1,J=5/2-3/2,F=5/2-5/2",226.892119,-4.74221,16.33579,-
 CNv=0,Cyanide Radical,"N=2-1,J=5/2-3/2,F=3/2-5/2",226.9053771,-5.94809,16.33642,-4.7824
 ```
 [![Black badge](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![PyPI badge](https://img.shields.io/pypi/v/memoir-lpd?color=blue)](https://pypi.org/project/memoir-lpd/)
