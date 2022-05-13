@@ -242,7 +242,7 @@ class Spectrum:
         print("Writing output file...")
         output_file = output + "/detected_lines.txt"
         header = (
-            "Spectrum_Peak_ID\tSpecies\tTransition\tTeorical_Frequency\tRedshifted_Frequency\t"
+            "#Some transitions in the built-in file used for the identification of the lines are in fact a combination of transitions. Please check https://github.com/aida-ahmadi/freqcomb/tree/master/tables for the grouping done.\nSpectrum_Peak_ID\tSpecies\tTransition\tTeorical_Frequency\tRedshifted_Frequency\t"
             + f"Peak_{self.columns[0]}\tPeak_{self.columns[1]}\tPeak_{self.columns[2]}"
         )
         peaks = np.array([i[0] for i in actual_lines])
