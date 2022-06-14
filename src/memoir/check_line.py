@@ -69,6 +69,22 @@ def spectrum_exist():
         return spectrum_files
 
 
+def image_exist():
+    image_files = sorted(glob.glob("*pbcor.fits"))
+    if image_files == []:
+        return False
+    else:
+        return image_files
+
+
+def mask_exist():
+    mask_files = sorted(glob.glob("*mask.fits"))
+    if mask_files == []:
+        return False
+    else:
+        return mask_files
+
+
 def output_folder(output):
     print("Creating output folder...")
     isdir = os.path.isdir(output)
