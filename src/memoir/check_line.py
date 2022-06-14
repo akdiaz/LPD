@@ -212,9 +212,7 @@ class Spectrum:
                     ]
                 )
         if len(potential_lines) == 0:
-            exit(
-                "There are no expected lines in the frequency range of the spectrum."
-            )
+            exit("There are no expected lines in the frequency range of the spectrum.")
         return potential_lines
 
     @property
