@@ -10,90 +10,9 @@ import importlib_resources
 import memoir
 import memoir.check_line
 
-parser = argparse.ArgumentParser(
-    description="MEMOIR: Molecular EMissiOn IdentifieR. Searches for lines in a spectrum and assignes IDs by comparing their frequencies with those of known lines. Returns a file text with the ID and the peak values (frequency, velocity, intensity/flux) of the detected lines.",
-    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-)
-parser.add_argument(
-    "-i",
-    "--fits_image",
-    type=str,
-    nargs="+",
-    help="Fits image to take spectrum on mask <<fits_mask>>.",
-    default=[""],
-)
-parser.add_argument(
-    "-m",
-    "--fits_mask",
-    type=str,
-    nargs="+",
-    help="Mask used to take spectrum in image <<fits_image>>.",
-    default=[""],
-)
-parser.add_argument(
-    "-t",
-    "--frequency_tolerance",
-    type=float,
-    help="Frequency tolerance (in the frequency units of the input spectrum). If a detected line has a known line with a frequency separation less than <<frequency_tolerance>>, it will assume its ID, if not, will remain unidentified (U).",
-    default=0.01,
-)
-parser.add_argument(
-    "-w",
-    "--line_width",
-    type=float,
-    help="Line width (in the velocity units of the input spectrum). Local peaks closer than <<line_width>> will be considered as belonging to the same line, and only the one with higher flux will be returned.",
-    default=20,
-)
-parser.add_argument(
-    "--snr",
-    type=float,
-    help="Signal-to-noise ratio. Only peaks with flux higher than <<SNR>> will be returned",
-    default=5,
-)
-parser.add_argument(
-    "-s",
-    "--spectrum_file_name",
-    type=str,
-    nargs="+",
-    help="Name of the file (including extension) with the spectrum to analyse. If not set (default behaviour) will use all the files in the working directory end-named 'spectrum.txt'.",
-    default=[""],
-)
 
-# The default file used by --known_lines_file_name; included in the package.
-KNOWN_LINES_DEFAULT_FILE = "data/allmols_combined_transitions.csv"
-
-parser.add_argument(
-    "-l",
-    "--known_lines_file_name",
-    type=str,
-    help="Name of the file (including extension) with the known lines. If not specified, use memoir's built-in one.",
-    default=None,
-)
-parser.add_argument(
-    "-o",
-    "--output",
-    type=str,
-    help="Name of the output folder.",
-    default="output",
-)
-parser.add_argument(
-    "--vlsr",
-    type=float,
-    help="Source radial velocity (local standard of rest) in km/s.",
-    default=0,
-)
-parser.add_argument(
-    "-v",
-    "--version",
-    action="version",
-    version=memoir.__version__,
-)
-
-if __name__ == "__main__":
-    args = parser.parse_args()
-
-    output = memoir.check_line.output_folder(args.output)
-
+# sub-command functions
+def extract(args):
     for image_name, mask_name in zip(args.fits_image, args.fits_mask):
         if image_name != "":
             print(f"For image {image_name} and mask {mask_name}:")
@@ -115,7 +34,10 @@ if __name__ == "__main__":
                     )
             else:
                 print("You need to provide a fits for the mask.")
-
+    
+def identify(args):
+    output = memoir.check_line.output_folder(args.output)
+    
     if args.spectrum_file_name == [""]:
         spectrum_file_names = memoir.check_line.spectrum_exist()
     else:
@@ -154,3 +76,110 @@ if __name__ == "__main__":
             spectrum.make_plot(
                 file_name, actual_lines, peak_frequencies, peak_fluxes, output
             )
+
+parser = argparse.ArgumentParser(
+    description="MEMOIR: Molecular EMissiOn IdentifieR. Searches for lines in a spectrum and assignes IDs by comparing their frequencies with those of known lines. Returns a file text with the ID and the peak values (frequency, velocity, intensity/flux) of the detected lines.",
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+)
+
+parser.add_argument(
+    "-v",
+    "--version",
+    action="version",
+    version=memoir.__version__,
+)
+
+subparsers = parser.add_subparsers(title='subcommands',
+                                    description='valid subcommands',
+                                    help='type memoir <<subcommand>> -h to get additional help')
+
+# create the parser for the "extract" command
+parser_extract = subparsers.add_parser('extract', description="extracts a spectrum from a fits image (provided by i) using a mask image (provided by m) and writes it to disk with end-name '.spectrum.txt'.")
+
+parser_extract.add_argument(
+    "-i",
+    "--fits_image",
+    type=str,
+    nargs="+",
+    help="Fits image to take spectrum on mask <<fits_mask>>.",
+    default=[""],
+)
+
+parser_extract.add_argument(
+    "-m",
+    "--fits_mask",
+    type=str,
+    nargs="+",
+    help="Mask used to take spectrum in image <<fits_image>>.",
+    default=[""],
+)
+
+parser_extract.set_defaults(func=extract)
+
+# create the parser for the "identify" command
+parser_identify = subparsers.add_parser('identify', description="detects lines in a spectrum (provided by -s) and identifies them by comparing their frequencies with those in a known-lines file (provided by -l). Writes to disks a file and plot(s) with the relevant info in the folder <<output>>.")
+
+parser_identify.add_argument(
+    "-s",
+    "--spectrum_file_name",
+    type=str,
+    nargs="+",
+    help="Name of the file (including extension) with the spectrum to analyse. If not set (default behaviour) will use all the files in the working directory end-named 'spectrum.txt'.",
+    default=[""],
+)
+
+# The default file used by --known_lines_file_name; included in the package.
+KNOWN_LINES_DEFAULT_FILE = "data/allmols_combined_transitions.csv"
+
+parser_identify.add_argument(
+    "-l",
+    "--known_lines_file_name",
+    type=str,
+    help="Name of the file (including extension) with the known lines. If not specified, use memoir's built-in one.",
+    default=None,
+)
+
+parser_identify.add_argument(
+    "-o",
+    "--output",
+    type=str,
+    help="Name of the output folder.",
+    default="output",
+)
+
+parser_identify.add_argument(
+    "--snr",
+    type=float,
+    help="Signal-to-noise ratio. Only peaks with flux higher than <<SNR>> will be returned",
+    default=5,
+)
+
+parser_identify.add_argument(
+    "-w",
+    "--line_width",
+    type=float,
+    help="Line width (in the velocity units of the input spectrum). Local peaks closer than <<line_width>> will be considered as belonging to the same line, and only the one with higher flux will be returned.",
+    default=20,
+)
+
+parser_identify.add_argument(
+    "-t",
+    "--frequency_tolerance",
+    type=float,
+    help="Frequency tolerance (in the frequency units of the input spectrum). If a detected line has a known line with a frequency separation less than <<frequency_tolerance>>, it will assume its ID, if not, will remain unidentified (U).",
+    default=0.01,
+)
+
+parser_identify.add_argument(
+    "--vlsr",
+    type=float,
+    help="Source radial velocity (local standard of rest) in km/s.",
+    default=0,
+)
+
+parser_identify.set_defaults(func=identify)
+
+if __name__ == "__main__":
+    args = parser.parse_args()
+    
+    args.func(args)   
