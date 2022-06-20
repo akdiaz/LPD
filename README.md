@@ -209,7 +209,7 @@ will make `MEMOIR` detect and identify the lines in the files "spw0.txt" and "sp
 ```
 will make `MEMOIR` detect and identify the lines in `MEMOIR` in all the .txt files in your current working directory.
 
-**Example of input spectrum file**:
+**Example of spectrum file**:
 ```
 # spw0.image, region=
 # beam size: 17.262405172558292 arcsec2, 53.13144097434767 pixels
@@ -223,7 +223,7 @@ will make `MEMOIR` detect and identify the lines in `MEMOIR` in all the .txt fil
         5                       269   330598.820792       -9.839839      4.755686e-01
 ```
 
-**Example of input known-lines file**:
+**Example of known-lines file**:
 ```
 Species,ChemicalName,QNs,Freq,log10_Aij,EU_K,CDMS/JPL Intensity
 CNv=0,Cyanide Radical,"N=1-0,J=1/2-1/2,F=1/2-1/2",113.1233687,-5.89067,5.43004,-4.7119
