@@ -332,9 +332,12 @@ class Spectrum:
                     (l[3], 0.9),
                     xycoords=("data", "axes fraction"),
                 )
+        ax2 = ax.twiny()  # instantiate a second axes that shares the same y-axis
+        ax2.plot(self.velocity, self.flux)
         ax.legend()
-        # add exis labels
+        # add axis labels
         ax.set_xlabel(self.columns[0])
+        ax2.set_xlabel(self.columns[1])
         ax.set_ylabel(self.columns[-1])
         fig.savefig(
             output + "/" + log_file.split("/")[-1][:-4] + ".png", bbox_inches="tight"
