@@ -256,6 +256,7 @@ class Spectrum:
             self.frequency[position_peaks],
             self.velocity[position_peaks],
             self.flux[position_peaks],
+            abs(self.velocity_resolution*position_widths)
         )
 
     def write_parameters(
