@@ -290,7 +290,7 @@ class Spectrum:
             np.savetxt(output_file, data, header=header, fmt=fmt)            
 
     def write_parameters(
-        self, actual_lines, peak_frequency, peak_velocity, peak_flux, output, log_file
+        self, actual_lines, peak_frequency, peak_velocity, peak_flux, peak_width, output, log_file
     ):
         print("Writing output file...")
         output_file = output + "/detected_lines.txt"
@@ -307,6 +307,7 @@ class Spectrum:
         peak_frequencies = [peak_frequency[p] for p in peaks]
         peak_velocities = [peak_velocity[p] for p in peaks]
         peak_fluxes = [peak_flux[p] for p in peaks]
+        peak_widths = [peak_width[p] for p in peaks]
         # format of columns in data
         columns_dtype = [
             ("name_peak", "U100"),
@@ -317,8 +318,9 @@ class Spectrum:
             ("peak_frequency", float),
             ("peak_velocity", float),
             ("peak_flux", float),
+            ("peak_width", float)
         ]
-        fmt = ["%s"] * 3 + ["%f"] * 5
+        fmt = ["%s"] * 3 + ["%f"] * 6
         # write data
         data = np.zeros(molecules.size, dtype=columns_dtype)
         data["name_peak"] = name_peaks
@@ -329,11 +331,15 @@ class Spectrum:
         data["peak_frequency"] = peak_frequencies
         data["peak_velocity"] = peak_velocities
         data["peak_flux"] = peak_fluxes
+        data["peak_width"] = peak_widths
         if os.path.isfile(output_file):
             with open(output_file, "a") as f:
                 np.savetxt(f, data, fmt=fmt)
         else:
             np.savetxt(output_file, data, header=header, fmt=fmt)
+            
+           
+              
 
     # this is just for reference while I code
     def make_plot(self, log_file, lines, frequency_peaks, flux_peaks, output):
