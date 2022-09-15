@@ -258,6 +258,36 @@ class Spectrum:
             self.flux[position_peaks],
             abs(self.velocity_resolution*position_widths)
         )
+        
+    def write_estimates(
+        self, peak_velocity, peak_flux, peak_width, output, log_file
+    ):
+        print("Writing output file...")
+        output_file = output + "/estimates.txt"
+        header = (
+            "Spectrum_Peak_ID\t"
+            + f"Peak_{self.columns[1]}\tPeak_{self.columns[2]}\tPeak_Width_FWHM {self.columns[1].split('_')[-1]}"
+        )
+        name_peaks = np.array([log_file[:-4] + "_" + str(idx) for idx, __ in enumerate(peak_velocity)])
+        # format of columns in data
+        columns_dtype = [
+            ("name_peak", "U100"),
+            ("peak_velocity", float),
+            ("peak_flux", float),
+            ("peak_width", float)
+        ]
+        fmt = ["%s"] * 1 + ["%f"] * 3
+        # write data
+        data = np.zeros(peak_velocity.size, dtype=columns_dtype)
+        data["name_peak"] = name_peaks
+        data["peak_velocity"] = peak_velocity
+        data["peak_flux"] = peak_flux
+        data["peak_width"] = peak_width
+        if os.path.isfile(output_file):
+            with open(output_file, "a") as f:
+                np.savetxt(f, data, fmt=fmt)
+        else:
+            np.savetxt(output_file, data, header=header, fmt=fmt)            
 
     def write_parameters(
         self, actual_lines, peak_frequency, peak_velocity, peak_flux, output, log_file
