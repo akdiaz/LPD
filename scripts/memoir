@@ -91,8 +91,10 @@ def identify(args):
             print(f"For spectrum {file_name}:")
             spectrum = memoir.check_line.Spectrum(file_name)
             lines = spectrum.potential_lines(known_lines_path, args.vlsr)
-            peak_frequencies, peak_velocities, peak_fluxes = spectrum.find_lines(
-                args.snr, args.line_width
+            position_peaks = spectrum.find_peaks(args.snr, args.line_width)
+            position_widths = spectrum.find_widths(position_peaks)
+            peak_frequencies, peak_velocities, peak_fluxes, peak_widths = spectrum.find_lines(
+                position_peaks, position_widths
             )
             actual_lines = memoir.check_line.match_lines(
                 lines, peak_frequencies, args.frequency_tolerance
@@ -102,12 +104,14 @@ def identify(args):
                 peak_frequencies,
                 peak_velocities,
                 peak_fluxes,
+                peak_widths,
                 output,
                 file_name,
             )
             spectrum.make_plot(
                 file_name, actual_lines, peak_frequencies, peak_fluxes, output
-            )
+            )           
+               
 
 parser = argparse.ArgumentParser(
     description="MEMOIR: Molecular EMissiOn IdentifieR. Searches for lines in a spectrum and assignes IDs by comparing their frequencies with those of known lines. Returns a file text with the ID and the peak values (frequency, velocity, intensity/flux) of the detected lines.",
