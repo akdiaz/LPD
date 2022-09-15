@@ -41,6 +41,31 @@ def extract(args):
                     )
             else:
                 print("You need to provide a fits for the mask.")
+                
+def estimate(args):  
+    output = memoir.check_line.output_folder(args.output)  
+
+    if args.spectrum_file_name == [""]:
+        spectrum_file_names = memoir.check_line.spectrum_exist()
+    else:
+        spectrum_file_names = args.spectrum_file_name   
+        
+    if spectrum_file_names:
+        for file_name in spectrum_file_names:
+            print(f"For spectrum {file_name}:")
+            spectrum = memoir.check_line.Spectrum(file_name)
+            position_peaks = spectrum.find_peaks(args.snr, args.line_width)
+            position_widths = spectrum.find_widths(position_peaks)
+            __, peak_velocities, peak_fluxes, peak_widths = spectrum.find_lines(
+                position_peaks, position_widths
+            )
+            spectrum.write_estimates(
+                peak_velocities,
+                peak_fluxes,
+                peak_widths,
+                output,
+                file_name
+            )                
     
 def identify(args):
     output = memoir.check_line.output_folder(args.output)
@@ -122,6 +147,59 @@ parser_extract.add_argument(
 )
 
 parser_extract.set_defaults(func=extract)
+
+# create the parser for the "estimate" command
+parser_estimate = subparsers.add_parser('estimate', description="Detects lines in a spectrum (provided by -s) and estimate their vlsr and line-width. Writes to disk a file with the relevant info in the folder <<output>>.")
+
+parser_estimate.add_argument(
+    "-s",
+    "--spectrum_file_name",
+    type=str,
+    nargs="+",
+    help="Name of the file (including extension) with the spectrum to analyse. If not set (default behaviour) will use all the files in the working directory end-named 'spectrum.txt'.",
+    default=[""],
+)
+
+parser_estimate.add_argument(
+    "-o",
+    "--output",
+    type=str,
+    help="Name of the output folder.",
+    default="output",
+)
+
+parser_estimate.add_argument(
+    "--snr",
+    type=float,
+    help="Signal-to-noise ratio. Only peaks with flux higher than <<SNR>> will be returned",
+    default=5,
+)
+
+parser_estimate.add_argument(
+    "-w",
+    "--line_width",
+    type=float,
+    help="Line width prior to estimation (in the velocity units of the input spectrum). Local peaks closer than <<line_width>> will be considered as belonging to the same line, and only the one with higher flux will be returned.",
+    default=20,
+)
+
+parser_estimate.add_argument(
+    "-t",
+    "--frequency_tolerance",
+    type=float,
+    help="Frequency tolerance (in the frequency units of the input spectrum). If a detected line has a known line with a frequency separation less than <<frequency_tolerance>>, it will assume its ID, if not, will remain unidentified (U).",
+    default=0.01,
+)
+
+parser_estimate.add_argument(
+    "--vlsr",
+    type=float,
+    help="Source radial velocity (local standard of rest) prior to estimation in km/s.",
+    default=0,
+)
+
+parser_estimate.set_defaults(func=estimate)
+
 
 # create the parser for the "identify" command
 parser_identify = subparsers.add_parser('identify', description="detects lines in a spectrum (provided by -s) and identifies them by comparing their frequencies with those in a known-lines file (provided by -l). Writes to disks a file and plot(s) with the relevant info in the folder <<output>>.")
