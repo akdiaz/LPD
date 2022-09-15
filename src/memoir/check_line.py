@@ -260,10 +260,10 @@ class Spectrum:
         )
         
     def write_estimates(
-        self, peak_velocity, peak_flux, peak_width, output, log_file
+        self, peak_velocity, peak_flux, peak_width, log_file
     ):
         print("Writing output file...")
-        output_file = output + "/estimates.txt"
+        output_file = "estimates.txt"
         header = (
             "Spectrum_Peak_ID\t"
             + f"Peak_{self.columns[1]}\tPeak_{self.columns[2]}\tPeak_Width_FWHM {self.columns[1].split('_')[-1]}"

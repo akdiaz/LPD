@@ -43,8 +43,6 @@ def extract(args):
                 print("You need to provide a fits for the mask.")
                 
 def estimate(args):  
-    output = memoir.check_line.output_folder(args.output)  
-
     if args.spectrum_file_name == [""]:
         spectrum_file_names = memoir.check_line.spectrum_exist()
     else:
@@ -63,7 +61,6 @@ def estimate(args):
                 peak_velocities,
                 peak_fluxes,
                 peak_widths,
-                output,
                 file_name
             )                
     
