@@ -126,7 +126,7 @@ subparsers = parser.add_subparsers(title='subcommands',
                                     help='type memoir <<subcommand>> -h to get additional help')
 
 # create the parser for the "extract" command
-parser_extract = subparsers.add_parser('extract', description="extracts a spectrum from a fits image (provided by i) using a mask image (provided by m) and writes it to disk with end-name 'spectrum.txt'.")
+parser_extract = subparsers.add_parser('extract', description="Extracts a spectrum from a fits image (provided by i) using a mask image (provided by m) and writes it to disk with end-name 'spectrum.txt'.")
 
 parser_extract.add_argument(
     "-i",
@@ -202,7 +202,7 @@ parser_estimate.set_defaults(func=estimate)
 
 
 # create the parser for the "identify" command
-parser_identify = subparsers.add_parser('identify', description="detects lines in a spectrum (provided by -s) and identifies them by comparing their frequencies with those in a known-lines file (provided by -l). Writes to disks a file and plot(s) with the relevant info in the folder <<output>>.")
+parser_identify = subparsers.add_parser('identify', description="Detects lines in a spectrum (provided by -s) and identifies them by comparing their frequencies with those in a known-lines file (provided by -l). Writes to disk a file and plot(s) with the relevant info in the folder <<output>>.")
 
 parser_identify.add_argument(
     "-s",
