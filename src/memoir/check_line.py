@@ -238,12 +238,20 @@ class Spectrum:
         values, edges = np.histogram(self.flux, bins=100)
         popt, _ = curve_fit(gaussian, edges[:-1], values, p0=[max(self.flux), 0, 1])
         return abs(popt[-1])
-
-    def find_lines(self, snr, width):
-        print("Finding detected lines in the spectrum...")
+        
+    def find_peaks(self, snr, width):
+        print("Finding peaks in the spectrum...")
         separation = width / abs(self.velocity_resolution)
-        peaks = sig.find_peaks(self.flux, height=snr * self.rms, distance=separation)
-        position_peaks = peaks[0]
+        position_peaks = sig.find_peaks(self.flux, height=snr * self.rms, distance=separation)
+        return position_peaks[0]
+        
+    def find_widths(self, position_peaks):
+        print("Finding line-widths...")
+        position_widths = sig.peak_widths(self.flux, position_peaks, rel_height=0.5)
+        return position_widths[0]   
+
+    def find_lines(self, position_peaks, position_widths):
+        print("Finding detected lines in the spectrum...")
         return (
             self.frequency[position_peaks],
             self.velocity[position_peaks],
