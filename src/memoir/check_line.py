@@ -67,7 +67,8 @@ def spectrum_exist():
         return False
     else:
         return spectrum_files
-        
+
+
 def estimate_exist():
     estimate_files = glob.glob("estimate.txt")
     if estimate_files == []:
@@ -90,14 +91,16 @@ def mask_exist():
         return False
     else:
         return mask_files
-        
+
+
 def read_estimate(estimate_file_name):
     peak_velocity, peak_width = np.loadtxt(
         estimate_file_name, usecols=(1, 3), unpack=True
-        )
-    vlsr = min(peak_velocity, key = abs)
+    )
+    vlsr = min(peak_velocity, key=abs)
     line_width = np.mean(peak_width)
     return vlsr, line_width
+
 
 def output_folder(output):
     print("Creating output folder...")
@@ -252,17 +255,19 @@ class Spectrum:
         values, edges = np.histogram(self.flux, bins=100)
         popt, _ = curve_fit(gaussian, edges[:-1], values, p0=[max(self.flux), 0, 1])
         return abs(popt[-1])
-        
+
     def find_peaks(self, snr, width):
         print("Finding peaks in the spectrum...")
         separation = width / abs(self.velocity_resolution)
-        position_peaks = sig.find_peaks(self.flux, height=snr * self.rms, distance=separation)
+        position_peaks = sig.find_peaks(
+            self.flux, height=snr * self.rms, distance=separation
+        )
         return position_peaks[0]
-        
+
     def find_widths(self, position_peaks):
         print("Finding peak-widths...")
         position_widths = sig.peak_widths(self.flux, position_peaks, rel_height=0.9)
-        return position_widths[0]   
+        return position_widths[0]
 
     def find_lines(self, position_peaks, position_widths):
         print("Finding detected lines in the spectrum...")
@@ -270,25 +275,25 @@ class Spectrum:
             self.frequency[position_peaks],
             self.velocity[position_peaks],
             self.flux[position_peaks],
-            abs(self.velocity_resolution*position_widths)
+            abs(self.velocity_resolution * position_widths),
         )
-        
-    def write_estimates(
-        self, peak_velocity, peak_flux, peak_width, log_file
-    ):
+
+    def write_estimates(self, peak_velocity, peak_flux, peak_width, log_file):
         print("Writing output file...")
         output_file = "estimate.txt"
         header = (
             "Spectrum_Peak_ID\t"
             + f"Peak_{self.columns[1]}\tPeak_{self.columns[2]}\tPeak_Width_10% {self.columns[1].split('_')[-1]}"
         )
-        name_peaks = np.array([log_file[:-4] + "_" + str(idx) for idx, __ in enumerate(peak_velocity)])
+        name_peaks = np.array(
+            [log_file[:-4] + "_" + str(idx) for idx, __ in enumerate(peak_velocity)]
+        )
         # format of columns in data
         columns_dtype = [
             ("name_peak", "U100"),
             ("peak_velocity", float),
             ("peak_flux", float),
-            ("peak_width", float)
+            ("peak_width", float),
         ]
         fmt = ["%s"] * 1 + ["%f"] * 3
         # write data
@@ -301,15 +306,23 @@ class Spectrum:
             with open(output_file, "a") as f:
                 np.savetxt(f, data, fmt=fmt)
         else:
-            np.savetxt(output_file, data, header=header, fmt=fmt)            
+            np.savetxt(output_file, data, header=header, fmt=fmt)
 
     def write_parameters(
-        self, vlsr, line_width, actual_lines, peak_frequency, peak_velocity, peak_flux, peak_width, output, log_file
+        self,
+        vlsr,
+        line_width,
+        actual_lines,
+        peak_frequency,
+        peak_velocity,
+        peak_flux,
+        peak_width,
+        output,
+        log_file,
     ):
         print("Writing output file...")
         output_file = output + "/detected_lines.txt"
-        header = (f"Some transitions in the built-in file used for the identification of the lines are in fact a combination of transitions. Please check https://github.com/aida-ahmadi/freqcomb/tree/master/tables for the grouping done.\nThis is a preliminary identification. Use at your own risk.\nUsing vlsr = {vlsr} {self.columns[1].split('_')[-1]} and line_width = {line_width} {self.columns[1].split('_')[-1]}.\nSpectrum_Peak_ID\tSpecies\tTransition\tTeorical_Frequency\tRedshifted_Frequency\tPeak_{self.columns[0]}\tPeak_{self.columns[1]}\tPeak_{self.columns[2]}\tPeak_Width_FWHM {self.columns[1].split('_')[-1]}"
-        )
+        header = f"Some transitions in the built-in file used for the identification of the lines are in fact a combination of transitions. Please check https://github.com/aida-ahmadi/freqcomb/tree/master/tables for the grouping done.\nThis is a preliminary identification. Use at your own risk.\nUsing vlsr = {vlsr} {self.columns[1].split('_')[-1]} and line_width = {line_width} {self.columns[1].split('_')[-1]}.\nSpectrum_Peak_ID\tSpecies\tTransition\tTeorical_Frequency\tRedshifted_Frequency\tPeak_{self.columns[0]}\tPeak_{self.columns[1]}\tPeak_{self.columns[2]}\tPeak_Width_FWHM {self.columns[1].split('_')[-1]}"
         peaks = np.array([i[0] for i in actual_lines])
         name_peaks = np.array([log_file[:-4] + "_" + str(p) for p in peaks])
         molecules = np.array([i[1] for i in actual_lines])
@@ -330,7 +343,7 @@ class Spectrum:
             ("peak_frequency", float),
             ("peak_velocity", float),
             ("peak_flux", float),
-            ("peak_width", float)
+            ("peak_width", float),
         ]
         fmt = ["%s"] * 3 + ["%f"] * 6
         # write data
@@ -349,9 +362,6 @@ class Spectrum:
                 np.savetxt(f, data, fmt=fmt)
         else:
             np.savetxt(output_file, data, header=header, fmt=fmt)
-            
-           
-              
 
     # this is just for reference while I code
     def make_plot(self, log_file, lines, frequency_peaks, flux_peaks, output):
@@ -389,21 +399,23 @@ class Spectrum:
                     (l[3], 0.9),
                     xycoords=("data", "axes fraction"),
                 )
-        
-        f_rest = self.frequency[round(len(self.frequency)/2)] * u.GHz  # rest frequency (central frequency of the spw)
+
+        f_rest = (
+            self.frequency[round(len(self.frequency) / 2)] * u.GHz
+        )  # rest frequency (central frequency of the spw)
         radio_equiv = u.doppler_radio(f_rest)
-    
+
         def freq2vel(frequency):
             frequency = frequency * u.GHz
             velocity = frequency.to(u.km / u.s, equivalencies=radio_equiv)
             return velocity.value
-            
+
         def vel2freq(velocity):
             velocity = velocity * u.km / u.s
             frequency = velocity.to(u.GHz, equivalencies=radio_equiv)
             return frequency.value
-                       
-        secax = ax.secondary_xaxis('top', functions=(freq2vel, vel2freq))
+
+        secax = ax.secondary_xaxis("top", functions=(freq2vel, vel2freq))
         ax.legend()
         # add axis labels
         ax.set_xlabel(self.columns[0])
