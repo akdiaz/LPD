@@ -112,6 +112,8 @@ def identify(args):
                 lines, peak_frequencies, args.frequency_tolerance
             )
             spectrum.write_parameters(
+                vlsr,
+                line_width,
                 actual_lines,
                 peak_frequencies,
                 peak_velocities,
