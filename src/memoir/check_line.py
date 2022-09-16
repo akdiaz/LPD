@@ -389,12 +389,25 @@ class Spectrum:
                     (l[3], 0.9),
                     xycoords=("data", "axes fraction"),
                 )
-        ax2 = ax.twiny()  # instantiate a second axes that shares the same y-axis
-        ax2.plot(self.velocity, self.flux)
+        
+        f_rest = self.frequency[round(len(self.frequency)/2)] * u.GHz  # rest frequency (central frequency of the spw)
+        radio_equiv = u.doppler_radio(f_rest)
+    
+        def freq2vel(frequency):
+            frequency = frequency * u.GHz
+            velocity = frequency.to(u.km / u.s, equivalencies=radio_equiv)
+            return velocity.value
+            
+        def vel2freq(velocity):
+            velocity = velocity * u.km / u.s
+            frequency = velocity.to(u.GHz, equivalencies=radio_equiv)
+            return frequency.value
+                       
+        secax = ax.secondary_xaxis('top', functions=(freq2vel, vel2freq))
         ax.legend()
         # add axis labels
         ax.set_xlabel(self.columns[0])
-        ax2.set_xlabel(self.columns[1])
+        secax.set_xlabel(self.columns[1])
         ax.set_ylabel(self.columns[-1])
         fig.savefig(
             output + "/" + log_file.split("/")[-1][:-4] + ".png", bbox_inches="tight"
