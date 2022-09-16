@@ -167,7 +167,7 @@ parser_extract.add_argument(
 parser_extract.set_defaults(func=extract)
 
 # create the parser for the "estimate" command
-parser_estimate = subparsers.add_parser('estimate', description="Detects lines in a spectrum (provided by -s) and estimate their vlsr and line-width. Writes to disk a file with the relevant info in the folder <<output>>.")
+parser_estimate = subparsers.add_parser('estimate', description="Detects lines in a spectrum (provided by -s) and estimate their vlsr and line-width (at 10% of maximum). Writes to disk a file with the relevant info in the folder <<output>>.")
 
 parser_estimate.add_argument(
     "-s",
@@ -235,7 +235,7 @@ parser_identify.add_argument(
     "-e",
     "--estimate_file_name",
     type=str,
-    help="Name of the file (including extension) with estimates of vlsr and line-width of the lines in the spectrum. If not set (default behaviour) will use, if exists, a file in the working directory named 'estimate.txt', or the values set with the parameters --vlsr and --line_width, in that order of preference.",
+    help="Name of the file (including extension) with estimates of vlsr and line-width (at 10% of maximum) of the lines in the spectrum. If not set (default behaviour) will use, if exists, a file in the working directory named 'estimate.txt', or the values set with the parameters --vlsr and --line_width, in that order of preference.",
     default=[""],
 )
 

@@ -261,7 +261,7 @@ class Spectrum:
         
     def find_widths(self, position_peaks):
         print("Finding peak-widths...")
-        position_widths = sig.peak_widths(self.flux, position_peaks, rel_height=0.5)
+        position_widths = sig.peak_widths(self.flux, position_peaks, rel_height=0.9)
         return position_widths[0]   
 
     def find_lines(self, position_peaks, position_widths):
@@ -280,7 +280,7 @@ class Spectrum:
         output_file = "estimate.txt"
         header = (
             "Spectrum_Peak_ID\t"
-            + f"Peak_{self.columns[1]}\tPeak_{self.columns[2]}\tPeak_Width_FWHM {self.columns[1].split('_')[-1]}"
+            + f"Peak_{self.columns[1]}\tPeak_{self.columns[2]}\tPeak_Width_10% {self.columns[1].split('_')[-1]}"
         )
         name_peaks = np.array([log_file[:-4] + "_" + str(idx) for idx, __ in enumerate(peak_velocity)])
         # format of columns in data
