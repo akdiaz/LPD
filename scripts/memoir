@@ -71,6 +71,21 @@ def identify(args):
         spectrum_file_names = memoir.check_line.spectrum_exist()
     else:
         spectrum_file_names = args.spectrum_file_name
+        
+    if args.estimate_file_name == [""] and memoir.check_line.estimate_exist():
+        estimate_file_name = memoir.check_line.estimate_exist()[0]
+        print(f'Reading default estimate file: {estimate_file_name}.')
+        vlsr, line_width = memoir.check_line.read_estimate(estimate_file_name)
+        print(f'Using mean values: vlsr = {vlsr} and line_width = {line_width}.')
+    elif args.estimate_file_name == [""] and not memoir.check_line.estimate_exist():
+        vlsr = args.vlsr
+        line_width = args.line_width
+        print(f'Using set values: vlsr = {args.vlsr} and line_width = {args.line_width}.')
+    else:
+        estimate_file_name = args.estimate_file_name
+        print(f'Reading user estimate file: {estimate_file_name}.')
+        vlsr, line_width = memoir.check_line.read_estimate(estimate_file_name)
+        print(f'Using mean values: vlsr = {vlsr} and line_width = {line_width}.')
 
     # Fall back to the built-in known lines file if the user didn't specify any.
     # https://importlib-resources.readthedocs.io/en/latest/migration.html#pkg-resources-resource-filename.
@@ -86,9 +101,9 @@ def identify(args):
     if spectrum_file_names:
         for file_name in spectrum_file_names:
             print(f"For spectrum {file_name}:")
-            spectrum = memoir.check_line.Spectrum(file_name)
-            lines = spectrum.potential_lines(known_lines_path, args.vlsr)
-            position_peaks = spectrum.find_peaks(args.snr, args.line_width)
+            spectrum = memoir.check_line.Spectrum(file_name)       
+            lines = spectrum.potential_lines(known_lines_path, vlsr)
+            position_peaks = spectrum.find_peaks(args.snr, line_width)
             position_widths = spectrum.find_widths(position_peaks)
             peak_frequencies, peak_velocities, peak_fluxes, peak_widths = spectrum.find_lines(
                 position_peaks, position_widths
@@ -211,6 +226,14 @@ parser_identify.add_argument(
     type=str,
     nargs="+",
     help="Name of the file (including extension) with the spectrum to analyse. If not set (default behaviour) will use all the files in the working directory end-named 'spectrum.txt'.",
+    default=[""],
+)
+
+parser_identify.add_argument(
+    "-e",
+    "--estimate_file_name",
+    type=str,
+    help="Name of the file (including extension) with estimates of vlsr and line-width of the lines in the spectrum. If not set (default behaviour) will use, if exists, a file in the working directory named 'estimate.txt', or the values set with the parameters --vlsr and --line_width, in that order of preference.",
     default=[""],
 )
 
