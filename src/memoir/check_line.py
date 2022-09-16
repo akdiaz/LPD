@@ -260,7 +260,7 @@ class Spectrum:
         return position_peaks[0]
         
     def find_widths(self, position_peaks):
-        print("Finding line-widths...")
+        print("Finding peak-widths...")
         position_widths = sig.peak_widths(self.flux, position_peaks, rel_height=0.5)
         return position_widths[0]   
 
