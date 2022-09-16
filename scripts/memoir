@@ -176,7 +176,7 @@ parser_extract.set_defaults(func=extract)
 # create the parser for the "estimate" command
 parser_estimate = subparsers.add_parser(
     "estimate",
-    description="Detects lines in a spectrum (provided by -s) and estimate their vlsr and line-width (at 10% of maximum). Writes to disk a file with the relevant info in the folder <<output>>.",
+    description="Detects lines in a spectrum (provided by -s) and estimate their vlsr and line-width (at 10% of maximum). Writes to disk a file with the relevant info in the working directory.",
 )
 
 parser_estimate.add_argument(
@@ -186,14 +186,6 @@ parser_estimate.add_argument(
     nargs="+",
     help="Name of the file (including extension) with the spectrum to analyse. If not set (default behaviour) will use all the files in the working directory end-named 'spectrum.txt'.",
     default=[""],
-)
-
-parser_estimate.add_argument(
-    "-o",
-    "--output",
-    type=str,
-    help="Name of the output folder.",
-    default="output",
 )
 
 parser_estimate.add_argument(
@@ -209,21 +201,6 @@ parser_estimate.add_argument(
     type=float,
     help="Line width prior to estimation (in the velocity units of the input spectrum). Local peaks closer than <<line_width>> will be considered as belonging to the same line, and only the one with higher flux will be returned.",
     default=20,
-)
-
-parser_estimate.add_argument(
-    "-t",
-    "--frequency_tolerance",
-    type=float,
-    help="Frequency tolerance (in the frequency units of the input spectrum). If a detected line has a known line with a frequency separation less than <<frequency_tolerance>>, it will assume its ID, if not, will remain unidentified (U).",
-    default=0.01,
-)
-
-parser_estimate.add_argument(
-    "--vlsr",
-    type=float,
-    help="Source radial velocity (local standard of rest) prior to estimation in km/s.",
-    default=0,
 )
 
 parser_estimate.set_defaults(func=estimate)
