@@ -67,6 +67,13 @@ def spectrum_exist():
         return False
     else:
         return spectrum_files
+        
+def estimate_exist():
+    estimate_files = glob.glob("estimate.txt")
+    if estimate_files == []:
+        return False
+    else:
+        return estimate_files
 
 
 def image_exist():
