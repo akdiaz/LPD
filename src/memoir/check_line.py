@@ -90,7 +90,14 @@ def mask_exist():
         return False
     else:
         return mask_files
-
+        
+def read_estimate(estimate_file_name):
+    peak_velocity, peak_width = np.loadtxt(
+        estimate_file_name, usecols=(1, 3), unpack=True
+        )
+    vlsr = np.mean(peak_velocity)
+    line_width = np.mean(peak_width)
+    return vlsr, line_width
 
 def output_folder(output):
     print("Creating output folder...")
