@@ -75,9 +75,9 @@ extracts a spectrum from a fits image (provided by i) using a mask image
 optional arguments:
   -h, --help            show this help message and exit
   -i FITS_IMAGE [FITS_IMAGE ...], --fits_image FITS_IMAGE [FITS_IMAGE ...]
-                        Fits image to take spectrum on mask <<fits_mask>>.
+                        Fits image to take spectrum on mask <<fits_mask>>. (default: [''])
   -m FITS_MASK [FITS_MASK ...], --fits_mask FITS_MASK [FITS_MASK ...]
-                        Mask used to take spectrum in image <<fits_image>>.
+                        Mask used to take spectrum in image <<fits_image>>. (default: [''])
 
 ```
 
