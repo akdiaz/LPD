@@ -76,16 +76,16 @@ def identify(args):
         estimate_file_name = memoir.check_line.estimate_exist()[0]
         print(f'Reading default estimate file: {estimate_file_name}.')
         vlsr, line_width = memoir.check_line.read_estimate(estimate_file_name)
-        print(f'Using mean values: vlsr = {vlsr} and line_width = {line_width}.')
+        print(f'Using values: vlsr = {vlsr} and line_width = {line_width}.')
     elif args.estimate_file_name == [""] and not memoir.check_line.estimate_exist():
         vlsr = args.vlsr
         line_width = args.line_width
-        print(f'Using set values: vlsr = {args.vlsr} and line_width = {args.line_width}.')
+        print(f'Using values: vlsr = {args.vlsr} and line_width = {args.line_width}.')
     else:
         estimate_file_name = args.estimate_file_name
         print(f'Reading user estimate file: {estimate_file_name}.')
         vlsr, line_width = memoir.check_line.read_estimate(estimate_file_name)
-        print(f'Using mean values: vlsr = {vlsr} and line_width = {line_width}.')
+        print(f'Using values: vlsr = {vlsr} and line_width = {line_width}.')
 
     # Fall back to the built-in known lines file if the user didn't specify any.
     # https://importlib-resources.readthedocs.io/en/latest/migration.html#pkg-resources-resource-filename.
