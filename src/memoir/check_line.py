@@ -308,7 +308,7 @@ class Spectrum:
     ):
         print("Writing output file...")
         output_file = output + "/detected_lines.txt"
-        header = (f"Some transitions in the built-in file used for the identification of the lines are in fact a combination of transitions. Please check https://github.com/aida-ahmadi/freqcomb/tree/master/tables for the grouping done.\nUsing vlsr = {vlsr} {self.columns[1].split('_')[-1]} and line_width = {line_width} {self.columns[1].split('_')[-1]}.\nSpectrum_Peak_ID\tSpecies\tTransition\tTeorical_Frequency\tRedshifted_Frequency\tPeak_{self.columns[0]}\tPeak_{self.columns[1]}\tPeak_{self.columns[2]}\tPeak_Width_FWHM {self.columns[1].split('_')[-1]}"
+        header = (f"Some transitions in the built-in file used for the identification of the lines are in fact a combination of transitions. Please check https://github.com/aida-ahmadi/freqcomb/tree/master/tables for the grouping done.\nThis is a preliminary identification. Use at your own risk.\nUsing vlsr = {vlsr} {self.columns[1].split('_')[-1]} and line_width = {line_width} {self.columns[1].split('_')[-1]}.\nSpectrum_Peak_ID\tSpecies\tTransition\tTeorical_Frequency\tRedshifted_Frequency\tPeak_{self.columns[0]}\tPeak_{self.columns[1]}\tPeak_{self.columns[2]}\tPeak_Width_FWHM {self.columns[1].split('_')[-1]}"
         )
         peaks = np.array([i[0] for i in actual_lines])
         name_peaks = np.array([log_file[:-4] + "_" + str(p) for p in peaks])
