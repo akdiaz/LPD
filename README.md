@@ -365,3 +365,4 @@ Note that the line with ID "spw_0_0" has two possible identifications (13COv=0 o
 
 [![Black badge](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![PyPI badge](https://img.shields.io/pypi/v/memoir-lpd?color=blue)](https://pypi.org/project/memoir-lpd/)
+[![DOI](https://zenodo.org/badge/364493633.svg)](https://zenodo.org/badge/latestdoi/364493633)
