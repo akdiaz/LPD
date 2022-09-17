@@ -29,16 +29,13 @@ You can access `MEMOIR` help with
 which produces
 
 ```
-usage: memoir [-h] [-v] {extract,identify} ...
+usage: memoir [-h] [-v] {extract,estimate,identify} ...
 
-MEMOIR: Molecular EMissiOn IdentifieR. Searches for lines in a spectrum and
-assignes IDs by comparing their frequencies with those of known lines. Returns
-a file text with the ID and the peak values (frequency, velocity,
-intensity/flux) of the detected lines.
+MEMOIR: Molecular EMissiOn IdentifieR. Searches for lines in a spectrum and assignes IDs by comparing their frequencies with those of known lines. Returns a file text with the ID and the peak values (frequency, velocity, intensity/flux) of the detected lines.
 
 optional arguments:
-  -h, --help          show this help message and exit
-  -v, --version       show program's version number and exit
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
 
 subcommands:
   valid subcommands
