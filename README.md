@@ -321,5 +321,37 @@ CNv=0,Cyanide Radical,"N=2-1,J=5/2-3/2,F=7/2-5/2",226.874745,-3.94188,16.33495,-
 CNv=0,Cyanide Radical,"N=2-1,J=5/2-3/2,F=5/2-5/2",226.892119,-4.74221,16.33579,-3.4004
 CNv=0,Cyanide Radical,"N=2-1,J=5/2-3/2,F=3/2-5/2",226.9053771,-5.94809,16.33642,-4.7824
 ```
+**Example of estimate file**:
+```
+# Spectrum_Peak_ID	Peak_Velocity_(km/s)	Peak_Sum_(Jy/beam)	Peak_Width_10% (km/s)
+spw_0_0 4.621650 84.846497 6.848417
+spw_1_0 6.072116 526.122437 4.316900
+spw_2_0 45.017431 7.240037 12.464653
+spw_2_1 -24.578994 7.425170 12.936669
+spw_3_0 6.761816 15.532443 11.558561
+spw_4_0 6.801448 17.015665 12.467995
+spw_5_0 4.420516 24.261328 24.365458
+spw_6_0 4.537041 10.090816 9.376807
+```
+Note that there is two peaks detected in the spectrum called "spw_2.txt" (the ones with IDs "spw_2_0" and "spw_2_1").
+
+**Example of a detected-lines file**:
+```
+# Some transitions in the built-in file used for the identification of the lines are in fact a combination of transitions. Please check https://github.com/aida-ahmadi/freqcomb/tree/master/tables for the grouping done.
+# This is a preliminary identification. Use at your own risk.
+# Using vlsr = 4.420516 (km/s) and line_width = 11.791932500000001 (km/s).
+# Spectrum_Peak_ID	Species	Transition	Teorical_Frequency	Redshifted_Frequency	Peak_Frequency_(GHz)	Peak_Velocity_(km/s)	Peak_Sum_(Jy/beam)	Peak_Width_FWHM (km/s)
+spw_0_0 13COv=0 2-1 220.398676 220.395427 220.395286 4.621650 84.846497 6.848417
+spw_0_0 CH3OHvt=0-2 10(-5)-11(-4)E2vt=0 220.401317 220.398067 220.395286 4.621650 84.846497 6.848417
+spw_1_0 COv=0 2-1 230.538000 230.534601 230.533331 6.072116 526.122437 4.316900
+spw_2_0 CCHv=0 N=3-2,J=7/2-5/2,F=4-3 262.004227 262.000363 262.000652 45.017431 7.240037 12.464653
+spw_2_1 CCHv=0 N=3-2,J=5/2-3/2,F=3-2 262.064843 262.060979 262.061484 -24.578994 7.425170 12.936669
+spw_3_0 C18O 2-1 219.560357 219.557119 219.555406 6.761816 15.532443 11.558561
+spw_4_0 H2CO 3(0,3)-2(0,2) 218.222192 218.218974 218.217241 6.801448 17.015665 12.467995
+spw_5_0 HCNv=0 J=3-2 265.886180 265.882259 265.882510 4.420516 24.261328 24.365458
+spw_6_0 HCO+v=0 1-0 89.188523 89.187208 89.187176 4.537041 10.090816 9.376807
+```
+Note that the line with ID "spw_0_0" has two possible identifications.
+
 [![Black badge](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![PyPI badge](https://img.shields.io/pypi/v/memoir-lpd?color=blue)](https://pypi.org/project/memoir-lpd/)
