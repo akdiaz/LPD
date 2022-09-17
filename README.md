@@ -142,7 +142,7 @@ In the directory where your spectrum file is stored, run:
 ❯ memoir identify
 ```
 
-This will produce a text file (called "detected-lines.txt") with the identified lines and their peak properties (velocity, frecuency and flux/intensity), and a plot (a .png file with the same name of the input spectrum file) with useful information, both inside a subfolder named "output" by default. If you pass several spectra to the script, you will get one plot per spectrum but only one file with the information of all the lines detected. The *name* of the lines includes a reference to the spectrum on which they were found.
+This will produce a text file (called "detected-lines.txt") with the identified lines and their peak properties (index, velocity, frequency and flux/intensity), and a plot (a .png file with the same name of the input spectrum file) with useful information, both inside a subfolder named "output" by default. If you pass several spectra to the script, you will get one plot per spectrum but only one file with the information of all the lines detected. The *index* of the lines includes a reference to the spectrum on which they were found.
 
 For example, if you analyse the spectra in the input files "spw_0.txt" and "spw_3.txt" (containing one CO line each), you will get an output text file (named "detected-lines.txt") like this:
 
@@ -219,7 +219,7 @@ optional arguments:
 
 ## Examples
 
-**Taking spectra:**
+**Extracting spectra:**
 ```
 ❯ memoir extract
 ```
