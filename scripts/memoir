@@ -151,6 +151,7 @@ subparsers = parser.add_subparsers(
 parser_extract = subparsers.add_parser(
     "extract",
     description="Extracts a spectrum from a fits image (provided by i) using a mask image (provided by m) and writes it to disk with end-name 'spectrum.txt'.",
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
 
 parser_extract.add_argument(
@@ -176,7 +177,8 @@ parser_extract.set_defaults(func=extract)
 # create the parser for the "estimate" command
 parser_estimate = subparsers.add_parser(
     "estimate",
-    description="Detects lines in a spectrum (provided by -s) and estimate their vlsr and line-width (at 10% of maximum). Writes to disk a file with the relevant info in the working directory.",
+    description="Detects peaks in a spectrum (provided by -s) and estimate their velocity and line-width (at 10% of maximum). Writes to disk a file with the relevant info in the working directory.",
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
 
 parser_estimate.add_argument(
@@ -205,11 +207,11 @@ parser_estimate.add_argument(
 
 parser_estimate.set_defaults(func=estimate)
 
-
 # create the parser for the "identify" command
 parser_identify = subparsers.add_parser(
     "identify",
     description="Detects lines in a spectrum (provided by -s) and identifies them by comparing their frequencies with those in a known-lines file (provided by -l). Writes to disk a file and plot(s) with the relevant info in the folder <<output>>.",
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
 
 parser_identify.add_argument(
@@ -225,7 +227,7 @@ parser_identify.add_argument(
     "-e",
     "--estimate_file_name",
     type=str,
-    help="Name of the file (including extension) with estimates of vlsr and line-width (at 10% of maximum) of the lines in the spectrum. If not set (default behaviour) will use, if exists, a file in the working directory named 'estimate.txt', or the values set with the parameters --vlsr and --line_width, in that order of preference.",
+    help="Name of the file (including extension) with estimates of vlsr and line-width (at 10%% of maximum) of the lines in the spectrum. If not set (default behaviour) will use, if exists, a file in the working directory named 'estimate.txt', or the values set with the parameters --vlsr and --line_width, in that order of preference.",
     default=[""],
 )
 
