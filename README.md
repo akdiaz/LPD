@@ -202,12 +202,13 @@ optional arguments:
 
 ### How it works
 
-1. Finds the lines in the spectrum whose peaks are above a certain threshold (provided by --snr) and that are separated in velocity more than certain value (provided by -w). These are the *detected-lines*.
-2. Looks up in the csv file containing the *known-lines* and
+1. If a text file with estimates of peak velocities and widths exist, or is provided (by -e), assumes as the source radial velocity in the local standard of rest (vlsr) the velocity of the peak closer to 0 (using as rest-frequency the central frequency of the spectrum), and as line-width (w) the mean of the widths of all the peaks. If this file does not exist, uses the vlsr and line-width provided by the user with the parameters --vlsr and -w, respectively (or their default values).
+2. Finds the lines in the spectrum whose peaks are above a certain threshold (provided by --snr) and that are separated in velocity more than certain value (provided by -w). These are the *detected-lines*.
+3. Looks up in the csv file containing the *known-lines* and
    - redshifts the theoretical frequencies according the velocity of the source (provided by --vlsr).
    - finds those lines that have redshifted frequencies inside the frequency range of the spectrum. These are the *expected-lines*.
-3. Matches each *detected-line*, with **all** the *expected-lines* that are closer in frequency than certain value (provided by -t).
-4. Returns the output files (see above).
+4. Matches each *detected-line*, with **all** the *expected-lines* that are closer in frequency than certain value (provided by -t).
+5. Returns the output files (see above).
 
 ## Examples
 
@@ -232,12 +233,22 @@ will make `MEMOIR` take a spectrum in "cube1.fits" using the mask "mask1.fits", 
 ```
 ❯ memoir identify
 ```
-will make `MEMOIR` detect and identify the lines in all the files end-named "spectrum.txt" in your current working directory.
+will make `MEMOIR` detect and identify the lines in all the files end-named "spectrum.txt" in your current working directory. If an estimate.txt file exists in the working directory, it will use the info there to estimate the vlsr and line-width (see above).
+
+```
+❯ memoir identify -e "my_estimate.txt"
+```
+will make `MEMOIR` detect and identify the lines in all the files end-named "spectrum.txt" in your current working directory. It will use the info in the file "my_estimate.txt" to estimate the vlsr and line-width (see above).
+
+```
+❯ memoir identify --vlsr 5 -w 10 
+```
+will make `MEMOIR` detect and identify the lines in all the files end-named "spectrum.txt" in your current working directory. If an estimate.txt file **does not exist** in the working directory, it will use as vlsr and line width the values set by the user (or their default, if not set). If the estimate.txt file **does** exist, it will use it even if the user has set --vlsr and/or -w. 
 
 ```
 ❯ memoir identify -s spw0.txt
 ```
-will make `MEMOIR` detect and identify the lines in the file "spw0.txt" in your current working directory.
+will make `MEMOIR` detect and identify the lines in the file "spw0.txt" in your current working directory. 
 
 ```
 ❯ memoir identify -s spw0.txt spw3.txt
