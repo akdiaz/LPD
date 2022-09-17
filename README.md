@@ -228,6 +228,28 @@ will make `MEMOIR` take a spectrum in "cube.fits" using the mask "mask.fits" in 
 ```
 will make `MEMOIR` take a spectrum in "cube1.fits" using the mask "mask1.fits", and in "cube2.fits" using the mask "mask2.fits", in your current working directory. The spectra will be written to disk in two files named "cube1.spectrum.txt" and "cube2.spectrum.txt". You can use as many cubes and corresponding masks as desired.
 
+**Estimating a velocity and width for the peaks:**
+```
+❯ memoir estimate
+```
+will make `MEMOIR` detect the peaks in all the files end-named "spectrum.txt" in your current working directory, and find their velocity and width at 10% of the maximum. This info will be written to disk in a file named "estimate.txt". Be mindful when processing more than one spectrum at the same time, since all the info in the output file will be later used as input parameters for the subcommand `identify`.
+
+```
+❯ memoir estimate -s spw0.txt
+```
+will make `MEMOIR` detect and estimate the properties of the peaks in the file "spw0.txt" in your current working directory.
+
+```
+❯ memoir estimate -s spw0.txt spw3.txt
+```
+will make `MEMOIR` detect and estimate the properties of the peaks in the files "spw0.txt" and "spw3.txt" in your current working directory.
+
+```
+❯ memoir estimate -s *.txt
+```
+will make `MEMOIR` detect and estimate the properties of the peaks in all the .txt files in your current working directory.
+
+
 **Detecting and identifying lines:**
 
 ```
