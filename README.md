@@ -210,7 +210,7 @@ optional arguments:
 
 ```
 
-### How it works
+### <a name="hiw_identify"></a>How it works
 
 1. If a text file with estimates of peak velocities and widths **exists, or is provided** (by -e), assumes as the source radial velocity in the local standard of rest (vlsr) the velocity of the peak closer to 0 km/s (using as rest-frequency the central frequency of the spectrum, assumed to be in GHz), and as line-width (w) the mean of the widths of all the peaks. If this file **does not exist**, uses the vlsr and line-width provided by the user with the parameters --vlsr and -w, respectively (or their default values).
 2. Finds the lines in the spectrum whose peaks are above a certain threshold (provided by --snr) and that are separated in velocity more than certain value (provided by -w). These are the *detected-lines*.
@@ -242,7 +242,7 @@ will make `MEMOIR` take a spectrum in "cube1.fits" using the mask "mask1.fits", 
 ```
 ❯ memoir estimate
 ```
-will make `MEMOIR` detect the peaks in all the files end-named "spectrum.txt" in your current working directory, and find their velocity and width at 10% of the maximum. This info will be written to disk in a file named "estimate.txt". Be mindful when processing more than one spectrum at the same time, since all the info in the output file will be later used as input parameters for the subcommand `identify` (see [how it works](### How it works)).
+will make `MEMOIR` detect the peaks in all the files end-named "spectrum.txt" in your current working directory, and find their velocity and width at 10% of the maximum. This info will be written to disk in a file named "estimate.txt". Be mindful when processing more than one spectrum at the same time, since all the info in the output file will be later used as input parameters for the subcommand `identify` (see [how it works](#hiw_identify)).
 
 ```
 ❯ memoir estimate -s spw0.txt
