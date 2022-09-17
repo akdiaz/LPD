@@ -365,18 +365,7 @@ Note that the line with ID "spw_0_0" has two possible identifications (13COv=0 o
 
 ### Citation
 
-If you use any file/result from this repo in your work, please cite it as:
-
-```
-@software{diaz2022,
-  author = {{Diaz-Rodriguez}, Ana K. and {Ahmadi}, Aida and {Miotello}, Anna and {Terron}, Victor},
-  title = {MEMOIR: Molecular EMissiOn IdentifieR},
-  url = {https://github.com/akdiaz/LPD},
-  doi = {10.5281/zenodo.7088475}
-  version = {1.01},
-  date = {2022-09-17},
-}
-```
+If you use this software in your work, please cite it using the metadata in the GitHub citation prompt in the About section (top right).
 
 
 [![Black badge](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
