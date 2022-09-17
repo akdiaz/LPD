@@ -363,6 +363,22 @@ spw_6_0 HCO+v=0 1-0 89.188523 89.187208 89.187176 4.537041 10.090816 9.376807
 ```
 Note that the line with ID "spw_0_0" has two possible identifications (13COv=0 or CH3OHvt=0-2).
 
+### Citation
+
+If you use any file/result from this repo in your work, please cite it as:
+
+```
+@software{diaz2022,
+  author = {{Diaz-Rodriguez}, Ana K. and {Ahmadi}, Aida and {Miotello}, Anna and {Terron}, Victor},
+  title = {MEMOIR: Molecular EMissiOn IdentifieR},
+  url = {https://github.com/akdiaz/LPD},
+  doi = {10.5281/zenodo.7088475}
+  version = {1.01},
+  date = {2022-09-17},
+}
+```
+
+
 [![Black badge](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![PyPI badge](https://img.shields.io/pypi/v/memoir-lpd?color=blue)](https://pypi.org/project/memoir-lpd/)
 [![DOI](https://zenodo.org/badge/364493633.svg)](https://zenodo.org/badge/latestdoi/364493633)
