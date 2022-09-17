@@ -1,7 +1,7 @@
 # LPD
 Lines in Protoplanetary Disks. ALMA Archive High Level Data Products.
 
-**URL**: [akdiaz.xyz/memoir](akdiaz.xyz/memoir)
+**URL**: [akdiaz.xyz/memoir](https://akdiaz.xyz/memoir)
 
 ## Molecular EMissiOn IdentifieR (MEMOIR)
 
