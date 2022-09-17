@@ -150,7 +150,7 @@ subparsers = parser.add_subparsers(
 # create the parser for the "extract" command
 parser_extract = subparsers.add_parser(
     "extract",
-    description="Extracts a spectrum from a fits image (provided by i) using a mask image (provided by m) and writes it to disk with end-name 'spectrum.txt'.",
+    description="Extracts a spectrum from a fits image (provided by -i) using a mask image (provided by -m) and writes it to disk with end-name 'spectrum.txt'.",
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
 
@@ -177,7 +177,7 @@ parser_extract.set_defaults(func=extract)
 # create the parser for the "estimate" command
 parser_estimate = subparsers.add_parser(
     "estimate",
-    description="Detects peaks in a spectrum (provided by -s) and estimate their velocity and line-width (at 10% of maximum). Writes to disk a file with the relevant info in the working directory.",
+    description="Detects peaks in a spectrum (provided by -s) and estimate their velocity and width (at 10% of maximum). Writes to disk a file with the relevant info in the working directory.",
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
 
@@ -227,7 +227,7 @@ parser_identify.add_argument(
     "-e",
     "--estimate_file_name",
     type=str,
-    help="Name of the file (including extension) with estimates of vlsr and line-width (at 10%% of maximum) of the lines in the spectrum. If not set (default behaviour) will use, if exists, a file in the working directory named 'estimate.txt', or the values set with the parameters --vlsr and --line_width, in that order of preference.",
+    help="Name of the file (including extension) with estimates of the velocity and width (at 10%% of maximum) of the peaks in the spectrum. If not set (default behaviour) will use, if exists, a file in the working directory named 'estimate.txt', or the values set with the parameters --vlsr and --line_width, in that order of preference.",
     default=[""],
 )
 
