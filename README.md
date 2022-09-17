@@ -122,12 +122,13 @@ optional arguments:
   -h, --help            show this help message and exit
   -s SPECTRUM_FILE_NAME [SPECTRUM_FILE_NAME ...], --spectrum_file_name SPECTRUM_FILE_NAME [SPECTRUM_FILE_NAME ...]
                         Name of the file (including extension) with the spectrum to analyse. If not set (default 
-                        behaviour) will use all the files in the working directory end-named 'spectrum.txt'. (default: [''])
+                        behaviour) will use all the files in the working directory end-named 'spectrum.txt'.
+                        (default: [''])
   --snr SNR             Signal-to-noise ratio. Only peaks with flux higher than <<SNR>> will be returned (default: 5)
   -w LINE_WIDTH, --line_width LINE_WIDTH
                         Line width prior to estimation (in the velocity units of the input spectrum). Local peaks closer
-                        than <<line_width>> will be considered as belonging to the same line, and only the one with higher
-                        flux will be returned. (default: 20)
+                        than <<line_width>> will be considered as belonging to the same line, and only the one with
+                        higher flux will be returned. (default: 20)
 
 ```
 
@@ -173,25 +174,27 @@ There are several options you can set to control the behavior of `MEMOIR` while 
 which produces
 
 ```
-usage: memoir identify [-h] [-s SPECTRUM_FILE_NAME [SPECTRUM_FILE_NAME ...]] [-e ESTIMATE_FILE_NAME] [-l KNOWN_LINES_FILE_NAME]
-                            [-o OUTPUT] [--snr SNR] [-w LINE_WIDTH] [-t FREQUENCY_TOLERANCE] [--vlsr VLSR]
+usage: memoir identify [-h] [-s SPECTRUM_FILE_NAME [SPECTRUM_FILE_NAME ...]] [-e ESTIMATE_FILE_NAME]
+                            [-l KNOWN_LINES_FILE_NAME] [-o OUTPUT] [--snr SNR] [-w LINE_WIDTH] 
+                            [-t FREQUENCY_TOLERANCE] [--vlsr VLSR]
 
-Detects lines in a spectrum (provided by -s) and identifies them by comparing their frequencies with those in a known-lines
-file (provided by -l). Writes to disk a file and plot(s) with the relevant info in the folder <<output>>.
+Detects lines in a spectrum (provided by -s) and identifies them by comparing their frequencies with those in a
+known-lines file (provided by -l). Writes to disk a file and plot(s) with the relevant info in the folder <<output>>.
 
 optional arguments:
   -h, --help            show this help message and exit
   -s SPECTRUM_FILE_NAME [SPECTRUM_FILE_NAME ...], --spectrum_file_name SPECTRUM_FILE_NAME [SPECTRUM_FILE_NAME ...]
-                        Name of the file (including extension) with the spectrum to analyse. If not set (default behaviour)
-                        will use all the files in the working directory end-named 'spectrum.txt'. (default: [''])
+                        Name of the file (including extension) with the spectrum to analyse. If not set (default
+                        behaviour) will use all the files in the working directory end-named 'spectrum.txt'.
+                        (default: [''])
   -e ESTIMATE_FILE_NAME, --estimate_file_name ESTIMATE_FILE_NAME
-                        Name of the file (including extension) with estimates of the velocity and width (at 10% of maximum)
-                        of the peaks in the spectrum. If not set (default behaviour) will use, if exists, a file in the
-                        working directory named 'estimate.txt', or the values set with the parameters --vlsr and --line_width,
-                        in that order of preference. (default: [''])
+                        Name of the file (including extension) with estimates of the velocity and width (at 10% of
+                        maximum) of the peaks in the spectrum. If not set (default behaviour) will use, if exists,
+                        a file in the working directory named 'estimate.txt', or the values set with the parameters
+                        --vlsr and --line_width, in that order of preference. (default: [''])
   -l KNOWN_LINES_FILE_NAME, --known_lines_file_name KNOWN_LINES_FILE_NAME
-                        Name of the file (including extension) with the known lines. If not specified, use memoir's built-in
-                        one. (default: None)
+                        Name of the file (including extension) with the known lines. If not specified, use memoir's
+                        built-in one. (default: None)
   -o OUTPUT, --output OUTPUT
                         Name of the output folder. (default: output)
   --snr SNR             Signal-to-noise ratio. Only peaks with flux higher than <<SNR>> will be returned (default: 5)
